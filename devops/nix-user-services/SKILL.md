@@ -46,6 +46,8 @@ See `references/home-manager-cross-platform-modules.md` for the reusable flake o
 
 See `references/ssh-agent-sockets.md` for the durable pattern when systemd user services need Git SSH authentication through 1Password or another SSH agent socket.
 
+See `references/darwin-launchd-git-ssh-logs.md` for diagnosing macOS LaunchAgents that commit but do not push because they lack the interactive SSH/1Password agent, and for adding stdout/stderr log files.
+
 ```nix
 systemd.user.services.example-server = lib.mkIf pkgs.stdenv.isLinux {
   Unit = {
@@ -164,7 +166,22 @@ launchctl print gui/$UID/<actual.label>
 sudo launchctl print system/<actual.label>
 ```
 
-In the output, report `state`, `pid`, `runs`, `last exit code`, the plist `path`, and the command from `program` / `arguments`.
+In the output, report `state`, `pid`, `runs`, `last exit code`, the plist `path`, and the command from `program` / `arguments`. For Git/SSH services, also inspect the process environment and compare the service's agent socket with the interactive one:
+
+```bash
+ps eww -p <pid> -o command | tr ' ' '\n' | grep -E '^(HOME|SSH_AUTH_SOCK|PATH)='
+SSH_AUTH_SOCK=<socket-from-service> ssh-add -l 2>&1 || true
+SSH_AUTH_SOCK=$HOME/.1password/agent.sock ssh-add -l 2>&1 || true
+```
+
+If a LaunchAgent's generated config has `StandardOutPath = null` and `StandardErrorPath = null`, macOS Unified Logging may show only low-level system messages while the CLI's stderr tracing disappears. Add explicit log files in the LaunchAgent config before concluding the tool is silent:
+
+```nix
+launchd.agents.<name>.config = lib.mkIf pkgs.stdenv.isDarwin {
+  StandardOutPath = "${config.home.homeDirectory}/Library/Logs/<name>.out.log";
+  StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/<name>.err.log";
+};
+```
 
 For macOS Unified Logging, the portable `journalctl -xef` equivalent is:
 

@@ -57,12 +57,13 @@ Use this skill when the user asks whether a dependency is available on NixOS/Nix
 
 7. Verify when making edits.
    - After editing, run the relevant `nix flake check`, `home-manager switch --flake ...`, or `nixos-rebuild dry-build/switch --flake ...` command only when scope is clear and side effects are acceptable.
-   - If canonical verification is not obvious or external tooling requests it, create a temporary `/tmp/hermes-verify-*` script that exercises the changed Nix behavior, run it, remove it when possible, and report it explicitly as ad-hoc verification rather than full suite green.
+   - If canonical verification is not obvious or external tooling requests it, create a focused temporary `hermes-verify-*` script with OS temp-directory APIs (`tempfile.mkstemp`/`mktemp`) rather than hand-writing into system temp paths. Run it against the changed Nix behavior, remove it when possible, and report it explicitly as ad-hoc verification rather than full suite green. For cross-platform guards, a concise probe can import the edited module twice with Linux and Darwin `system` values and assert the guarded attr is absent/present as intended.
    - For local flake eval/build probes, prefer `--no-write-lock-file` unless the requested task is to update the lockfile; this prevents verification from adding incidental `flake.lock` churn.
    - For Home Manager symlink-collision fixes, verify both declaration and behavior: the file entry has the intended `source`/`force` settings, the live target is a symlink to the canonical dotfiles path, the referenced file parses, and any relevant app writer preserves the symlink.
 
 ## Pitfalls
 
+- In NixOS/nix-darwin modules, avoid wrapping the whole returned module in `lib.optionalAttrs pkgs.stdenv.isDarwin ...` (or otherwise forcing `pkgs` while the module is being imported). Under the module system this can recurse through `_module.args.pkgs`. Prefer returning a normal attrset and putting `lib.mkIf pkgs.stdenv.isDarwin` on the specific option value, e.g. `homebrew = lib.mkIf pkgs.stdenv.isDarwin { ...; };`.
 - For Powerlevel10k instant prompt under Home Manager, setting `POWERLEVEL9K_INSTANT_PROMPT=verbose` in the p10k config is not enough; the instant-prompt cache source block must appear at the very top of the generated `.zshrc`. Use `programs.zsh.initContent = lib.mkBefore '' ... '';` rather than deprecated `initExtraFirst`, and escape Zsh parameter expansion in Nix strings as `''${...}` (for example `''${XDG_CACHE_HOME:-$HOME/.cache}` and `''${(%):-%n}`). Keep the block before plugin sourcing/completion because Home Manager sources `programs.zsh.plugins` later in `initContent`.
 - For Home Manager-managed dotfile symlinks that an app may replace with a real file (for example config writers that use atomic replace), use the attrset form with `force = true;` so activation restores the symlink instead of failing with a clobbering/collision error:
   ```nix

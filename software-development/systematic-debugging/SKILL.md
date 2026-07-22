@@ -73,6 +73,7 @@ You MUST complete each phase before proceeding to the next.
 - They often contain the exact solution
 - Read stack traces completely
 - Note line numbers, file paths, error codes
+- For production issues linked from Jira/Sentry, pull the full Sentry issue + latest/listed event payloads, not just the summary table. Capture endpoint, request payload, release SHA, first/last seen, and stack frames before tracing source. See `references/sentry-production-issue-investigation.md`.
 
 **Action:** Use `read_file` on the relevant source files. Use `search_files` to find the error string in the codebase.
 

@@ -19,6 +19,16 @@ Check once if needed:
 gh auth status
 ```
 
+If `gh auth status` reports an invalid stored account but a valid token is available from the Hermes GitHub auth environment, prefer the token for non-interactive jobs instead of stopping:
+
+```bash
+source "${HERMES_HOME:-$HOME/.hermes}/skills/github/github-auth/scripts/gh-env.sh" >/dev/null 2>&1 || true
+export GH_TOKEN="$GITHUB_TOKEN"
+gh api user --jq .login
+```
+
+This is especially useful in cron/scheduled jobs where the user is not present to re-run `gh auth login`. Do not print the token.
+
 ## Safety
 
 - Read operations are fine without confirmation.
