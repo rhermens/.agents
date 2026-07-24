@@ -12,18 +12,31 @@
     "use_count": 1,
     "view_count": 1
   },
+  "architect": {
+    "archived_at": null,
+    "created_at": "2026-07-24T17:16:00.783708+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-24T17:16:00.784817+00:00",
+    "last_viewed_at": "2026-07-24T17:16:00.783719+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
+  },
   "build": {
     "archived_at": null,
     "created_at": "2026-07-21T03:17:49.118004+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T15:02:12.002215+00:00",
-    "last_used_at": "2026-07-22T17:30:01.996674+00:00",
-    "last_viewed_at": "2026-07-22T17:30:01.995669+00:00",
+    "last_used_at": "2026-07-24T17:18:39.880411+00:00",
+    "last_viewed_at": "2026-07-24T17:18:39.878455+00:00",
     "patch_count": 7,
     "pinned": false,
     "state": "active",
-    "use_count": 15,
-    "view_count": 15
+    "use_count": 16,
+    "view_count": 16
   },
   "github-code-review": {
     "archived_at": null,
@@ -173,13 +186,13 @@
     "created_at": "2026-07-21T15:12:39.307059+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-21T15:12:39.308155+00:00",
-    "last_viewed_at": "2026-07-21T15:12:39.307066+00:00",
+    "last_used_at": "2026-07-24T17:18:39.883792+00:00",
+    "last_viewed_at": "2026-07-24T17:18:39.882365+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 1,
-    "view_count": 1
+    "use_count": 2,
+    "view_count": 2
   },
   "unattended-git-services": {
     "archived_at": null,
