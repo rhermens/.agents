@@ -82,12 +82,12 @@
     "created_at": "2026-07-21T05:00:56.634361+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T05:07:01.604092+00:00",
-    "last_used_at": "2026-07-23T05:00:26.245463+00:00",
+    "last_used_at": "2026-07-24T05:02:07.269350+00:00",
     "last_viewed_at": "2026-07-21T05:43:07.436730+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
+    "use_count": 6,
     "view_count": 2
   },
   "nix-dependency-management": {
@@ -120,26 +120,26 @@
     "archived_at": null,
     "created_at": "2026-07-20T18:46:07.856073+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-22T17:33:46.455113+00:00",
-    "last_used_at": "2026-07-22T17:36:56.230135+00:00",
-    "last_viewed_at": "2026-07-22T17:36:56.229056+00:00",
-    "patch_count": 24,
+    "last_patched_at": "2026-07-24T05:22:07.138491+00:00",
+    "last_used_at": "2026-07-24T16:52:18.190990+00:00",
+    "last_viewed_at": "2026-07-24T16:52:18.189884+00:00",
+    "patch_count": 25,
     "pinned": false,
     "state": "active",
-    "use_count": 20,
-    "view_count": 20
+    "use_count": 24,
+    "view_count": 24
   },
   "obsidian": {
     "archived_at": null,
     "created_at": "2026-07-21T05:00:56.624884+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-23T05:00:26.236248+00:00",
+    "last_used_at": "2026-07-24T05:02:07.256932+00:00",
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 3,
+    "use_count": 4,
     "view_count": 0
   },
   "review": {
@@ -160,13 +160,13 @@
     "created_at": "2026-07-21T04:02:38.259375+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T04:44:07.775481+00:00",
-    "last_used_at": "2026-07-21T12:33:31.109660+00:00",
-    "last_viewed_at": "2026-07-21T12:33:31.108749+00:00",
+    "last_used_at": "2026-07-24T16:52:18.195680+00:00",
+    "last_viewed_at": "2026-07-24T16:52:18.194565+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 7,
-    "view_count": 7
+    "use_count": 10,
+    "view_count": 10
   },
   "test-driven-development": {
     "archived_at": null,
