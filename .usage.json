@@ -69,13 +69,13 @@
     "created_at": "2026-07-21T05:43:06.409935+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-21T18:32:46.541466+00:00",
-    "last_viewed_at": "2026-07-21T18:32:46.540174+00:00",
+    "last_used_at": "2026-07-24T18:14:50.991842+00:00",
+    "last_viewed_at": "2026-07-24T18:14:50.988591+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 3,
+    "view_count": 3
   },
   "jira-acli": {
     "archived_at": null,
@@ -95,13 +95,26 @@
     "created_at": "2026-07-21T05:00:56.634361+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T05:07:01.604092+00:00",
-    "last_used_at": "2026-07-24T05:02:07.269350+00:00",
-    "last_viewed_at": "2026-07-21T05:43:07.436730+00:00",
+    "last_used_at": "2026-07-24T17:46:53.274866+00:00",
+    "last_viewed_at": "2026-07-24T17:46:53.261951+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 6,
-    "view_count": 2
+    "use_count": 8,
+    "view_count": 3
+  },
+  "llm-model-selection": {
+    "archived_at": null,
+    "created_at": "2026-07-24T17:49:02.731289+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-07-24T17:49:12.787289+00:00",
+    "last_used_at": "2026-07-24T17:59:03.098124+00:00",
+    "last_viewed_at": "2026-07-24T17:59:03.097096+00:00",
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   },
   "nix-dependency-management": {
     "archived_at": null,
@@ -147,12 +160,25 @@
     "created_at": "2026-07-21T05:00:56.624884+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-24T05:02:07.256932+00:00",
+    "last_used_at": "2026-07-24T17:45:49.428030+00:00",
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 4,
+    "use_count": 5,
+    "view_count": 0
+  },
+  "obsidian-cleanup-heuristics": {
+    "archived_at": null,
+    "created_at": "2026-07-24T17:47:00.447224+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
     "view_count": 0
   },
   "review": {
@@ -173,13 +199,13 @@
     "created_at": "2026-07-21T04:02:38.259375+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T04:44:07.775481+00:00",
-    "last_used_at": "2026-07-24T17:07:13.240250+00:00",
-    "last_viewed_at": "2026-07-24T17:07:13.238291+00:00",
+    "last_used_at": "2026-07-24T18:14:50.993009+00:00",
+    "last_viewed_at": "2026-07-24T18:14:50.990868+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 11,
-    "view_count": 11
+    "use_count": 12,
+    "view_count": 12
   },
   "test-driven-development": {
     "archived_at": null,
