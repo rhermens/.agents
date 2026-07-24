@@ -70,6 +70,10 @@ gh api graphql \
   }'
 ```
 
+## References
+
+- `references/repayment-flow-comment-assessment.md` — concrete example of combining GraphQL unresolved threads, latest review bodies, current-head code inspection, and targeted tests.
+
 ## Pitfalls
 
 - REST `/pulls/{n}/comments` lists inline comments but does not provide the review-thread resolved state.
