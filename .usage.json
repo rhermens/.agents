@@ -12,31 +12,70 @@
     "use_count": 1,
     "view_count": 1
   },
+  "architect": {
+    "archived_at": null,
+    "created_at": "2026-07-23T10:13:47.931894+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-23T11:45:10.887658+00:00",
+    "last_viewed_at": "2026-07-23T11:45:10.887024+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 2,
+    "view_count": 2
+  },
   "build": {
     "archived_at": null,
     "created_at": "2026-07-21T03:17:49.118004+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T15:02:12.002215+00:00",
-    "last_used_at": "2026-07-22T17:41:08.631914+00:00",
-    "last_viewed_at": "2026-07-22T17:41:08.631493+00:00",
+    "last_used_at": "2026-07-23T10:25:18.021046+00:00",
+    "last_viewed_at": "2026-07-23T10:25:18.020322+00:00",
     "patch_count": 7,
     "pinned": false,
     "state": "active",
-    "use_count": 15,
-    "view_count": 15
+    "use_count": 17,
+    "view_count": 17
+  },
+  "docker-compose-infrastructure": {
+    "archived_at": null,
+    "created_at": "2026-07-23T10:26:55.552497+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-07-23T10:27:09.501123+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "github-cli": {
+    "archived_at": null,
+    "created_at": "2026-07-23T06:07:48.978363+00:00",
+    "created_by": null,
+    "last_patched_at": "2026-07-23T08:06:39.980640+00:00",
+    "last_used_at": "2026-07-24T06:15:32.693623+00:00",
+    "last_viewed_at": "2026-07-23T08:06:23.940937+00:00",
+    "patch_count": 2,
+    "pinned": false,
+    "state": "active",
+    "use_count": 8,
+    "view_count": 1
   },
   "github-code-review": {
     "archived_at": null,
     "created_at": "2026-07-21T08:49:20.503318+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-21T14:22:43.907354+00:00",
-    "last_used_at": "2026-07-21T15:05:51.812558+00:00",
-    "last_viewed_at": "2026-07-21T15:05:51.810859+00:00",
-    "patch_count": 3,
+    "last_patched_at": "2026-07-23T08:06:59.853222+00:00",
+    "last_used_at": "2026-07-24T06:15:32.704851+00:00",
+    "last_viewed_at": "2026-07-23T08:06:48.070875+00:00",
+    "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 11,
-    "view_count": 11
+    "use_count": 19,
+    "view_count": 12
   },
   "github-pr-workflow": {
     "archived_at": null,
@@ -69,13 +108,13 @@
     "created_at": "2026-07-21T08:49:20.502971+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-21T15:05:51.813091+00:00",
-    "last_viewed_at": "2026-07-21T15:05:51.811440+00:00",
+    "last_used_at": "2026-07-23T10:13:33.919745+00:00",
+    "last_viewed_at": "2026-07-23T10:13:33.919266+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
-    "view_count": 5
+    "use_count": 7,
+    "view_count": 7
   },
   "knowledge-base-maintenance": {
     "archived_at": null,
@@ -147,26 +186,52 @@
     "created_at": "2026-07-21T02:45:15.491511+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T15:11:28.667971+00:00",
-    "last_used_at": "2026-07-21T15:11:14.206802+00:00",
+    "last_used_at": "2026-07-24T06:15:32.681369+00:00",
     "last_viewed_at": "2026-07-21T15:11:14.205806+00:00",
     "patch_count": 8,
     "pinned": false,
     "state": "active",
-    "use_count": 23,
+    "use_count": 30,
     "view_count": 23
+  },
+  "scheduled-pr-review-digests": {
+    "archived_at": null,
+    "created_at": "2026-07-23T14:07:07.702583+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "sentry-cli": {
+    "archived_at": null,
+    "created_at": "2026-07-23T10:00:33.768009+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": "2026-07-23T10:00:33.768873+00:00",
+    "last_viewed_at": "2026-07-23T10:00:33.768020+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   },
   "systematic-debugging": {
     "archived_at": null,
     "created_at": "2026-07-21T04:02:38.259375+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T04:44:07.775481+00:00",
-    "last_used_at": "2026-07-21T12:33:31.109660+00:00",
-    "last_viewed_at": "2026-07-21T12:33:31.108749+00:00",
+    "last_used_at": "2026-07-23T12:22:54.968105+00:00",
+    "last_viewed_at": "2026-07-23T12:22:54.966985+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 7,
-    "view_count": 7
+    "use_count": 8,
+    "view_count": 8
   },
   "test-driven-development": {
     "archived_at": null,
@@ -180,5 +245,18 @@
     "state": "active",
     "use_count": 1,
     "view_count": 1
+  },
+  "typescript-import-refactors": {
+    "archived_at": null,
+    "created_at": "2026-07-23T12:07:58.776082+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
   }
 }

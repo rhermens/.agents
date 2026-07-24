@@ -67,9 +67,14 @@ gh issue view ISSUE_NUMBER -R OWNER/REPO --json number,title,body,author,labels,
 ```bash
 gh pr list -R OWNER/REPO --state open --limit 50 --json number,title,author,headRefName,baseRefName,isDraft,mergeable,reviewDecision,statusCheckRollup,url
 
-gh pr view PR_NUMBER -R OWNER/REPO --json number,title,body,author,headRefName,baseRefName,files,commits,reviews,comments,checks,statusCheckRollup,mergeable,reviewDecision,url
+gh pr view PR_NUMBER -R OWNER/REPO --json number,title,body,author,headRefName,baseRefName,files,commits,reviews,comments,statusCheckRollup,mergeable,reviewDecision,url
 
 gh pr diff PR_NUMBER -R OWNER/REPO --patch
+```
+
+`gh pr view --json` does not expose a `checks` field in current gh versions; use `statusCheckRollup` for PR check summaries, or `gh pr checks PR_NUMBER -R OWNER/REPO` for the check table/log links.
+
+```
 ```
 
 ### Actions and workflow runs
@@ -96,6 +101,12 @@ gh release view TAG -R OWNER/REPO --json tagName,name,body,isDraft,isPrerelease,
 gh api repos/OWNER/REPO/contents/PATH --jq .
 
 gh api repos/OWNER/REPO/readme --jq .download_url
+```
+
+To read a file at a specific branch/SHA, put `ref` in the endpoint query string (do not pass it with `-f`, which turns the request into form parameters and can yield 404s on contents endpoints):
+
+```bash
+gh api "repos/OWNER/REPO/contents/PATH?ref=BRANCH_OR_SHA" --jq .content | base64 -d
 ```
 
 For source code in the current checkout, prefer local tools (`rg`, `git`, `read`) over GitHub API.
