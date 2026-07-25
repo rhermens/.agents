@@ -163,7 +163,8 @@ pytest. Install it into `venv/` if needed:
 
 - `references/hermes-sane-path-nixos.md` — detailed write-up of the Hermes
   `_SANE_PATH` missing NixOS dirs bug, including the session transcript that
-  uncovered it and the exact patch applied.
+  uncovered it, the config-first fix (`shell_init_files`), the alternative
+  source patch, and research findings from upstream PRs and the Hermes FAQ.
 
 ## Pitfalls
 
@@ -180,3 +181,14 @@ pytest. Install it into `venv/` if needed:
   or "exhausts its tool-call budget without applying edits," check the session
   transcript for `command not found` errors — the agent likely spent its
   budget working around the PATH issue.
+- A broken PATH compounds with tool-call budget limits: each failed
+  `ls`/`find`/`head` costs a tool call, and the agent may spend 4–7 calls
+  diagnosing the PATH issue before falling back to `python3`. On a 50-call
+  budget, this leaves little room for the actual task. Always apply the
+  permanent fix (`shell_init_files` config) rather than relying on
+  per-run workarounds.
+- When diagnosing a cron job that "exhausted its tool-call budget," use
+  `session_search` to find the cron session transcript and look for
+  `command not found` errors in the tool call results — the budget
+  exhaustion may be a symptom of the PATH issue, not a prompt or model
+  problem.
