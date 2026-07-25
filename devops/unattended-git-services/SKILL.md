@@ -43,6 +43,14 @@ Prefer one synchronization per process:
 
 Threads are not a safe cancellation boundary for native Git/SSH calls: Rust cannot forcibly terminate a thread stuck inside FFI.
 
+## Nix Home Manager module patterns
+
+When the service is declared in a Nix Home Manager module, prefer inlining the binary + args directly into `ExecStart` (systemd) or `ProgramArguments` (launchd) over generating a `pkgs.writeShellScript` wrapper. Set `SSH_AUTH_SOCK` through the service manager's native environment key — `Service.Environment` on systemd, `config.EnvironmentVariables` on launchd — merged conditionally with `lib.optionalAttrs (service.sshAuthSock != null)`. Use `lib.getExe package` (and set `meta.mainProgram` on the package) so the binary path resolves without a deprecation warning.
+
+Reserve a shell wrapper for the one case inline env cannot handle: runtime `SSH_AUTH_SOCK` discovery on macOS launchd, where the socket is imported into launchd via `launchctl getenv` but not known to Nix at eval time. If `sshAuthSock` defaults to `config.home.sessionVariables.SSH_AUTH_SOCK or null` (recommended), the inline approach covers both platforms without a wrapper.
+
+See the `nix-user-services` skill's `references/ssh-agent-sockets.md` for the concrete inline-vs-wrapper tradeoff and code examples.
+
 ## Pitfalls
 
 - `Restart=on-failure` cannot recover a process that spins forever without exiting.
@@ -52,6 +60,7 @@ Threads are not a safe cancellation boundary for native Git/SSH calls: Rust cann
 - Desktop-agent prompts are GUI authorization, not terminal input; TTY and askpass flags are usually irrelevant.
 - Hard-coded branch refspecs break repositories using a different default branch.
 - Do not activate a full declarative system generation when unrelated uncommitted changes are present without understanding their scope.
+- `lib.getExe` emits a deprecation warning if the package lacks `meta.mainProgram`; set it on the derivation so the inline-`ExecStart` pattern resolves cleanly.
 
 ## Verification
 
