@@ -1,0 +1,150 @@
+---
+name: nixos-environment-debugging
+description: Debug NixOS-specific environment issues — missing PATH entries, command-not-found in cron/systemd agents, broken tool pipelines, and non-FHS filesystem layout quirks.
+platforms: [linux]
+---
+
+# NixOS Environment Debugging
+
+Use this skill when debugging environment failures that are specific to NixOS's
+non-FHS layout. On NixOS, binaries are NOT in `/bin/` or `/usr/bin/` — they live
+in the Nix store and are surfaced through system/profile symlink trees that are
+only set up by login shells sourcing `/etc/profile`.
+
+## When to use
+
+- A cron job, systemd service, or background agent reports `command not found`
+  for basic utilities (`ls`, `find`, `head`, `grep`, `rg`, `cat`).
+- A tool that shells out internally (e.g. `search_files` piping through `head`)
+  fails with `(eval):1: command not found: head`.
+- An agent works fine in an interactive TUI session but fails in cron with PATH
+  errors.
+- A script works when run from a terminal but fails when launched by a service
+  manager.
+
+## Diagnostic pattern
+
+When basic commands fail in a non-interactive environment on NixOS:
+
+1. **Check what's on PATH:**
+   ```bash
+   command -v ls; command -v find; command -v python3; echo "PATH=$PATH"
+   ```
+   If `python3` resolves but `ls`/`find` don't, and PATH is missing
+   `/run/current-system/sw/bin`, this is a NixOS PATH issue.
+
+2. **Confirm the NixOS system bin dir exists:**
+   ```bash
+   ls /run/current-system/sw/bin/ls  # should exist on NixOS
+   ```
+
+3. **Identify the launcher:** cron, systemd, desktop launchers, and
+   `nohup`/`setsid` typically don't source `/etc/profile`, so the NixOS PATH
+   setup is skipped. Interactive shells work because they source it.
+
+## NixOS PATH reference
+
+| Directory | Contents |
+|-----------|----------|
+| `/run/current-system/sw/bin` | System-level utilities (ls, find, head, grep, etc.) |
+| `/etc/profiles/per-user/$USER/bin` | Per-user Home Manager packages |
+| `/nix/var/nix/profiles/default/bin` | Nix profile binaries |
+| `/home/$USER/.nix-profile/bin` | User's nix-profile binaries |
+| `/run/wrappers/bin` | SUID wrappers (ping, etc.) |
+
+A login shell sources `/etc/profile` which sets up PATH with these dirs.
+Non-login environments (cron, systemd, desktop launchers) get a minimal PATH.
+
+## Agent workarounds (in the moment)
+
+When stuck in a cron/background run with a broken PATH:
+
+1. **Use `python3` heredocs** instead of shell utilities for file operations:
+   ```bash
+   python3 << 'EOF'
+   import os
+   for r, dirs, files in os.walk('/path/to/dir'):
+       dirs[:] = [d for d in dirs if d not in {'.git', '.obsidian', 'node_modules'}]
+       for f in files:
+           if f.endswith('.md'):
+               print(os.path.relpath(os.path.join(r, f), '/path/to/dir'))
+   EOF
+   ```
+
+2. **Prefer Python-backed tools** over shell-backed ones:
+   - `read_file` instead of `cat`/`head`/`tail`
+   - `patch` instead of `sed`/`awk`
+   - `write_file` instead of `echo`/heredoc
+   - `search_files` may also be broken if it shells out to `head` — use
+     `python3` with `os.walk` + `re` for content searches instead.
+
+3. **Report the PATH issue** in the final response so the user can fix the
+   environment permanently.
+
+## Permanent fixes
+
+### For Hermes Agent (cron/background)
+
+Patch `_append_missing_sane_path_entries()` in
+`tools/environments/local.py` to append NixOS system dirs when they exist:
+
+```python
+import os as _os
+for nix_dir in (
+    "/run/current-system/sw/bin",
+    "/etc/profiles/per-user/" + _os.environ.get("USER", ""),
+    "/nix/var/nix/profiles/default/bin",
+):
+    if nix_dir and nix_dir not in seen and _os.path.isdir(nix_dir):
+        ordered_entries.append(nix_dir)
+```
+
+The `isdir` guard makes this a no-op on non-NixOS systems.
+
+### For systemd services
+
+Add `Environment=PATH=/run/current-system/sw/bin:...` to the service unit,
+or source the profile in the ExecStart prelude.
+
+### For cron jobs
+
+Set `PATH` explicitly in the crontab, or wrap the command in a login shell:
+`bash -l -c '...'`.
+
+## Verification
+
+After patching Hermes's `_SANE_PATH` logic, run the PATH-related test suite:
+
+```bash
+cd ~/.hermes/hermes-agent
+venv/bin/python -m pytest tests/tools/test_browser_homebrew_paths.py \
+  tests/tools/test_local_env_blocklist.py \
+  tests/tools/test_windows_native_support.py -q --tb=short
+```
+
+Note: `scripts/run_tests.sh` probes `.venv` first, which may exist without
+pytest. Install it into `venv/` if needed:
+`venv/bin/pip install pytest pytest-asyncio pytest-timeout`, then run
+`venv/bin/python -m pytest` directly.
+
+## References
+
+- `references/hermes-sane-path-nixos.md` — detailed write-up of the Hermes
+  `_SANE_PATH` missing NixOS dirs bug, including the session transcript that
+  uncovered it and the exact patch applied.
+
+## Pitfalls
+
+- Do NOT assume `/bin/ls` or `/usr/bin/find` exist on NixOS — they don't.
+- Do NOT assume that because `python3` works, other commands will too —
+  Python is in the Hermes venv, not the system bin dir.
+- `search_files` and `read_file` may shell out to `head` internally — if
+  `head` is not on PATH, these tools break silently (returning error strings
+  instead of results).
+- The Hermes TUI session works because it inherits the login shell's PATH;
+  cron jobs don't. Don't assume the TUI environment matches the cron
+  environment.
+- When an agent in a broken-PATH cron run "completes but produces no output"
+  or "exhausts its tool-call budget without applying edits," check the session
+  transcript for `command not found` errors — the agent likely spent its
+  budget working around the PATH issue.
