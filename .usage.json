@@ -108,13 +108,13 @@
     "created_at": "2026-07-21T05:00:56.634361+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T05:07:01.604092+00:00",
-    "last_used_at": "2026-07-25T09:12:49.418020+00:00",
-    "last_viewed_at": "2026-07-25T09:12:49.414711+00:00",
+    "last_used_at": "2026-07-25T09:19:15.072077+00:00",
+    "last_viewed_at": "2026-07-25T09:19:15.065685+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 11,
-    "view_count": 5
+    "use_count": 12,
+    "view_count": 6
   },
   "llm-model-selection": {
     "archived_at": null,
@@ -134,13 +134,13 @@
     "created_at": "2026-07-21T02:43:13.426832+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-21T02:43:13.427796+00:00",
-    "last_viewed_at": "2026-07-21T02:43:13.426842+00:00",
+    "last_used_at": "2026-07-25T09:20:23.148862+00:00",
+    "last_viewed_at": "2026-07-25T09:20:23.137158+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 1,
-    "view_count": 1
+    "use_count": 2,
+    "view_count": 2
   },
   "nix-toolset-audit": {
     "archived_at": null,
@@ -186,13 +186,13 @@
     "created_at": "2026-07-24T17:47:00.447224+00:00",
     "created_by": "agent",
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-07-25T09:19:15.069149+00:00",
+    "last_viewed_at": "2026-07-25T09:19:15.053039+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "review": {
     "archived_at": null,
