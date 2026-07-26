@@ -121,13 +121,13 @@
     "created_at": "2026-07-21T05:00:56.634361+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T05:07:01.604092+00:00",
-    "last_used_at": "2026-07-26T05:38:32.580864+00:00",
-    "last_viewed_at": "2026-07-25T09:26:59.076436+00:00",
+    "last_used_at": "2026-07-26T05:42:52.946263+00:00",
+    "last_viewed_at": "2026-07-26T05:42:52.934156+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 15,
-    "view_count": 8
+    "use_count": 16,
+    "view_count": 9
   },
   "llm-model-selection": {
     "archived_at": null,
@@ -199,39 +199,39 @@
     "created_at": "2026-07-21T05:00:56.624884+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-26T05:38:32.571945+00:00",
-    "last_viewed_at": "2026-07-25T13:24:21.114001+00:00",
+    "last_used_at": "2026-07-26T05:43:32.530547+00:00",
+    "last_viewed_at": "2026-07-26T05:43:32.518452+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 10,
-    "view_count": 3
+    "use_count": 11,
+    "view_count": 4
   },
   "obsidian-cleanup-heuristics": {
     "archived_at": null,
     "created_at": "2026-07-24T17:47:00.447224+00:00",
     "created_by": "agent",
     "last_patched_at": null,
-    "last_used_at": "2026-07-25T09:19:15.069149+00:00",
-    "last_viewed_at": "2026-07-25T09:19:15.053039+00:00",
+    "last_used_at": "2026-07-26T05:43:30.447744+00:00",
+    "last_viewed_at": "2026-07-26T05:43:30.435348+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 1,
-    "view_count": 1
+    "use_count": 2,
+    "view_count": 2
   },
   "obsidian-design-notes": {
     "archived_at": null,
     "created_at": "2026-07-25T13:24:41.658588+00:00",
     "created_by": "agent",
     "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-07-26T05:43:53.909530+00:00",
+    "last_viewed_at": "2026-07-26T05:43:53.896425+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "pipewire-wireplumber": {
     "archived_at": null,
