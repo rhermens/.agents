@@ -23,6 +23,9 @@ import sys
 import unicodedata
 from collections import Counter, defaultdict
 
+# Todo checkbox pattern — notes containing this pattern must NEVER be deleted
+TODO_RE = re.compile(r"^\s*[-*+]?\s*\[[ xX>]\]", re.M)
+
 DEFAULT_EXCLUDE_DIRS = {".git", ".obsidian", "node_modules", ".stfolder", ".sync"}
 FRONT_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.S)
 CODE_RE = re.compile(r"```.*?```", re.S)
