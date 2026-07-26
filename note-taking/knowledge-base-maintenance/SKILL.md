@@ -43,6 +43,7 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
    - merge duplicates by preserving the richer/canonical note, adding source aliases/IDs when useful, and deleting the source only after verifying the destination contains the useful content,
    - add only high-confidence wikilinks; avoid generic homonyms and personal/work cross-domain collisions,
    - remove only notes that satisfy the conservative deletion criteria above,
+   - **before deleting any note, check whether it contains todo checkboxes** (`- [ ]`, `- [x]`, `- [X]`, `- [>]`). If it does, do NOT delete it — skip it and note it in the report as a protected todo note. This check is mandatory and overrides all other deletion criteria (orphan status, age, word count, empty/stub classification).
    - leave a root note named like `Knowledge Base Maintenance Diff YYYY-MM-DD HHMMSS.md` containing the summary, file list/name-status, and representative unified diff.
 9. Final answer should include:
    - vault path and note count,
