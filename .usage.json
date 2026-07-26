@@ -121,13 +121,13 @@
     "created_at": "2026-07-21T05:00:56.634361+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T05:07:01.604092+00:00",
-    "last_used_at": "2026-07-26T05:42:52.946263+00:00",
-    "last_viewed_at": "2026-07-26T05:42:52.934156+00:00",
+    "last_used_at": "2026-07-26T05:45:38.502978+00:00",
+    "last_viewed_at": "2026-07-26T05:45:38.501743+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 16,
-    "view_count": 9
+    "use_count": 17,
+    "view_count": 10
   },
   "llm-model-selection": {
     "archived_at": null,
@@ -199,13 +199,13 @@
     "created_at": "2026-07-21T05:00:56.624884+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-26T05:43:32.530547+00:00",
-    "last_viewed_at": "2026-07-26T05:43:32.518452+00:00",
+    "last_used_at": "2026-07-26T05:45:57.021674+00:00",
+    "last_viewed_at": "2026-07-26T05:45:57.009215+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 11,
-    "view_count": 4
+    "use_count": 12,
+    "view_count": 5
   },
   "obsidian-cleanup-heuristics": {
     "archived_at": null,
