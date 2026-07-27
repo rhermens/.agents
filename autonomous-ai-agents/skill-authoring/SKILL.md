@@ -1,69 +1,69 @@
 ---
 name: skill-authoring
-description: Create, revise, validate, consolidate, and audit portable Agent Skills containing SKILL.md instructions, scripts, references, or assets. Use when the user asks to author a skill, improve skill triggers or structure, merge overlapping skills, or check Agent Skills specification compliance.
+description: Create, revise, merge, validate, and audit portable Agent Skills. Use for SKILL.md instructions, triggers, structure, support files, or specification compliance.
 license: MIT
 compatibility: Agent Skills-compatible harnesses, including Pi, Claude Code, Codex, and Hermes Agent.
 metadata:
   author: Roy Hermens
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # Skill Authoring
 
-Create focused skills that reliably change agent behavior without duplicating general instructions or consuming unnecessary context.
+Create focused skills that change agent behavior reliably. Avoid duplicate guidance and unnecessary context.
 
 ## When to use
 
 Use this skill to:
 
 - create or scaffold a reusable Agent Skill,
-- revise a `SKILL.md` description, workflow, or supporting files,
-- merge redundant skills,
-- audit a skill for portability, safety, and specification compliance,
-- decide whether instructions belong in a skill, project guidance, or a one-off prompt.
+- revise a skill description, workflow, or support file,
+- merge skills that have overlapping triggers,
+- audit portability, safety, or specification compliance,
+- decide whether guidance belongs in a skill, project instructions, or a prompt.
 
-Do not create a skill for a single task, generic advice the agent already follows, or project rules that should always apply. Put always-on repository conventions in `AGENTS.md` or the harness equivalent.
+Do not create a skill for one task or generic advice. Put permanent repository rules in `AGENTS.md` or its equivalent.
 
 ## Workflow
 
-1. **Establish scope.** Identify the desired behavior, triggering requests, non-triggering requests, target harnesses, canonical skill root, and whether the work is creation, revision, merge, or audit. Ask only for decisions that cannot be inferred safely.
-2. **Survey existing skills.** Inspect skill names and descriptions before drafting. Read the full bodies of the closest matches. Prefer extending or merging an existing skill over adding a competing trigger.
-3. **Design the behavior change.** Define the inputs, ordered actions, safety boundaries, completion criteria, and expected report. Remove instructions that merely restate default agent behavior.
-4. **Choose the content boundary.** Keep always-needed instructions in `SKILL.md`; move branch-specific detail to `references/`, deterministic operations to `scripts/`, and reusable output material to `assets/`.
-5. **Implement narrowly.** Preserve local conventions when editing. Use portable relative paths, document dependencies, and avoid hard-coded user or repository paths unless the skill is intentionally private and environment-specific.
-6. **Validate.** Run [`python scripts/validate_skill.py <skill-directory>`](scripts/validate_skill.py), inspect every warning, and perform any harness-specific validation available.
-7. **Exercise the trigger.** Test at least one request that should activate the skill and one nearby request that should not. Confirm the instructions are sufficient without loading unrelated references.
-8. **Report the result.** State the created, changed, merged, or removed paths; validation performed; assumptions; and any harness restart or session reload needed for discovery.
+1. **Establish the scope.** Identify the intended behavior, trigger requests, exclusions, target harnesses, skill root, and work type. Ask only for decisions that you cannot infer safely.
+2. **Survey existing skills.** Inspect nearby names and descriptions. Read the full text of the closest matches. Extend an existing skill when possible.
+3. **Design the behavior.** Define inputs, ordered actions, safety limits, completion criteria, and the final report. Remove guidance that repeats default agent behavior.
+4. **Choose content locations.** Keep essential guidance in `SKILL.md`. Put optional details, deterministic operations, and reusable material in their applicable directories.
+5. **Implement the smallest change.** Preserve valid local conventions. Use portable paths and documented dependencies. Avoid machine-specific paths unless the skill requires them.
+6. **Validate the skill.** Run [`python scripts/validate_skill.py <skill-directory>`](scripts/validate_skill.py). Review each warning. Run available harness checks.
+7. **Test the trigger.** Test one request that must activate the skill. Test one similar request that must not activate it.
+8. **Report the result.** List changed paths, checks, assumptions, and required reloads.
 
 ## Decide whether a skill is appropriate
 
-Create a skill when all of these are true:
+Create a skill only when all these conditions are true:
 
-- The task class is likely to recur.
-- Specialized process or domain knowledge materially improves the result.
-- The behavior can be described with a stable trigger and completion condition.
-- The content can remain sufficiently self-contained or reference local support files.
+- The task will probably occur again.
+- Special process or domain knowledge improves the result.
+- A stable trigger and completion condition can describe the behavior.
+- The skill can contain its guidance or link to local support files.
 
-Prefer another mechanism when:
+Use another mechanism in these cases:
 
-- **Always-on project rule:** use `AGENTS.md` or equivalent project instructions.
-- **One-off request:** use the user prompt or a plan.
-- **Large external documentation:** reference or index the source instead of copying it into `SKILL.md`.
-- **Independent execution role:** use the harness's agent/delegation mechanism rather than pretending a skill creates a separate agent.
+- **Permanent project rule:** Use `AGENTS.md` or equivalent project instructions.
+- **One-time request:** Use the user prompt or a plan.
+- **Large external document:** Link to or index the source. Do not copy it into `SKILL.md`.
+- **Independent execution role:** Use the harness delegation system. Do not simulate another agent with a skill.
 
 ## Portable structure
 
-Use the standard directory shape:
+Use this directory structure:
 
 ```text
 skill-name/
 ├── SKILL.md
-├── scripts/       # optional executable helpers
-├── references/    # optional on-demand documentation
+├── scripts/       # optional deterministic operations
+├── references/    # optional guidance loaded when needed
 └── assets/        # optional templates or static resources
 ```
 
-Resolve relative paths from the skill directory. Keep supporting files inside the skill so the directory can be moved or shared intact.
+Resolve relative paths from the skill directory. Keep support files inside this directory so users can move the skill safely.
 
 ## Frontmatter
 
@@ -72,7 +72,7 @@ Use portable Agent Skills fields by default:
 ```yaml
 ---
 name: skill-name
-description: Describe what the skill does and the specific requests that should trigger it.
+description: Describe the skill output and the requests that activate it.
 license: MIT
 compatibility: Optional environment or dependency requirements.
 metadata:
@@ -81,31 +81,32 @@ metadata:
 ---
 ```
 
-Requirements:
+Apply these requirements:
 
-- `name` is 1–64 characters, lowercase ASCII letters, digits, and hyphens only.
-- `name` has no leading, trailing, or consecutive hyphens.
-- The directory name matches `name` for cross-harness portability.
-- `description` is non-empty, at most 1024 characters, and explains both capability and trigger.
-- `compatibility` is at most 500 characters when present.
-- Optional metadata must not be required for correct behavior.
-- Treat `allowed-tools` as experimental and harness-specific; omit it unless the target environment explicitly supports it.
+- Use 1–64 lowercase ASCII letters, digits, or hyphens for `name`.
+- Do not put a hyphen first or last. Do not use consecutive hyphens.
+- Match the directory name to `name` for cross-harness portability.
+- Keep `description` non-empty and no longer than 1024 characters.
+- State the skill capability and its trigger in `description`.
+- Keep `compatibility` no longer than 500 characters.
+- Do not require optional metadata for correct behavior.
+- Treat `allowed-tools` as experimental and harness-specific. Omit it unless the target harness supports it.
 
 ## Write effective descriptions
 
-The description is always visible during skill discovery, so optimize it for accurate routing.
+The harness always reads the description during skill discovery. Write it for accurate routing.
 
-A strong description contains:
+Include:
 
 1. concrete actions or outputs,
-2. recognizable user terminology,
+2. terms that users will probably use,
 3. explicit trigger conditions,
-4. enough distinction from neighboring skills.
+4. a clear difference from nearby skills.
 
 Prefer:
 
 ```yaml
-description: Inspect and repair TypeScript import paths after files or domain types move. Use for unresolved-module errors caused by a refactor or bounded-context migration.
+description: Inspect and repair TypeScript import paths after files or domain types move. Use for unresolved-module errors caused by refactors or bounded-context migrations.
 ```
 
 Avoid:
@@ -114,97 +115,104 @@ Avoid:
 description: Helps with TypeScript.
 ```
 
-Do not stuff the workflow into the description. Do not make several skills claim broad phrases such as “use for coding” or “use for debugging.”
+Do not put the workflow in the description. Do not let several skills claim broad triggers such as “coding” or “debugging.”
 
 ## Write effective instructions
 
-- Start with the outcome and when the skill applies.
-- Use an ordered workflow for sequencing and bullets for decision rules.
-- Give each important step a checkable completion condition.
-- Co-locate caveats with the action they constrain.
-- State destructive-operation authorization boundaries explicitly.
-- Include exact commands only when precision is valuable and the command is portable.
-- Include examples for ambiguous inputs, outputs, or branching behavior.
-- End with verification and reporting expectations.
-- Delete no-op prose such as “be careful,” “be thorough,” or “follow best practices.”
+- State the required outcome and the applicable requests first.
+- Use numbered steps for sequences. Use bullets for decision rules.
+- Give each important step a completion condition.
+- Put each exception next to the action that it limits.
+- State authorization requirements for destructive operations.
+- Include exact commands when they add necessary precision and remain portable.
+- Add examples when inputs, outputs, or branches can be ambiguous.
+- End with verification and reporting requirements.
+- Remove empty guidance such as “be careful” or “follow best practices.”
 
-Use strong rules sparingly. Reserve **must**, **always**, and **never** for genuine invariants; excessive absolutes make skills brittle or contradictory.
+Use **must**, **always**, and **never** only for real invariants. Too many absolute rules make skills brittle or contradictory.
 
 ## Write clear technical instructions
 
-Apply these ASD-STE100-inspired principles unless the skill's domain requires different terminology or sentence structure:
+Apply these ASD-STE100-inspired principles unless the domain requires different language:
 
-- Use one consistent term for each concept. Do not alternate between synonyms for stylistic variety.
-- Use familiar words with one clear meaning. Define necessary domain-specific terms where readers first need them.
+- Use one consistent term for each concept. Do not change terms for stylistic variety.
+- Use familiar words with one clear meaning. Define necessary domain terms where readers first need them.
 - Prefer active voice. Write agent actions in the imperative form, such as “Validate the file.”
-- Put one instruction in each sentence or numbered step, except when actions must occur at the same time.
-- Put a condition before its instruction and separate it clearly, such as “If validation fails, stop the workflow.”
-- Keep instructions concise. As a practical target, use no more than 20 words for an instruction and 25 words for descriptive text.
-- Give each paragraph one topic. Use short paragraphs, headings, and vertical lists to show structure.
-- Use notes only for information. Do not hide required actions in notes or explanatory prose.
-- State safety information explicitly: identify the hazard, its possible consequence, and the action that prevents it.
-- Preserve exact commands, identifiers, API names, quotations, and required legal or domain terminology even when they exceed these targets.
+- Put one instruction in each sentence or numbered step. Combine actions only when they must occur together.
+- Put a condition before its instruction. For example, write “If validation fails, stop the workflow.”
+- Keep instructions concise. Target 20 words or fewer for instructions and 25 words or fewer for descriptions.
+- Give each paragraph one topic. Use short paragraphs, headings, and vertical lists.
+- Use notes only for information. Do not hide required actions in notes or explanations.
+- Identify each hazard, its possible consequence, and the action that prevents it.
+- Preserve exact commands, identifiers, API names, quotations, and required domain terms.
 
-These principles improve clarity but do not by themselves make a skill ASD-STE100 compliant. Claim compliance only after checking the complete text against the current writing rules and controlled dictionary.
+These principles improve clarity, but they do not prove ASD-STE100 compliance. Check the complete text against the current rules and dictionary before claiming compliance.
 
 ## Progressive disclosure
 
-The entire `SKILL.md` is loaded when the skill activates. Keep it focused.
+The harness loads all of `SKILL.md` when the skill activates. Keep this file focused.
 
-Move content to `references/` when it is:
+Use `references/` for content that:
 
-- needed only for one branch of the workflow,
-- a long API or format reference,
-- a catalog of examples,
-- likely to change independently.
+- applies to one workflow branch,
+- contains a long API or format reference,
+- contains many examples,
+- can change independently.
 
-Move content to `scripts/` when a deterministic implementation is safer or cheaper than repeatedly generating commands. Scripts should be self-contained, validate inputs, fail with actionable errors, avoid destructive defaults, and document nonstandard dependencies.
+Use `scripts/` when deterministic code is safer or cheaper than generated commands. Each script must:
 
-Place templates and static resources in `assets/`. Link every support file from `SKILL.md` or remove it if unused.
+- contain all required logic,
+- validate its inputs,
+- fail with an actionable message,
+- avoid destructive defaults,
+- document nonstandard dependencies.
 
-## Merging and revising skills
+Put templates and static resources in `assets/`. Link each support file from `SKILL.md`, or remove the unused file.
+
+## Merge or revise skills
 
 When skills overlap:
 
-1. Choose the skill with the clearer name, broader valid trigger, or more established support files as the destination.
-2. Compare instructions by behavior, not wording.
-3. Transfer only unique, still-correct rules and assets.
-4. Reconcile contradictions explicitly; prefer safer and more evidence-backed behavior.
-5. Remove duplicated prose and stale references.
-6. Delete the redundant skill only after validating the destination contains all retained behavior.
-7. Search configurations and documentation for references to the removed skill name.
+1. Select the skill with the clearest name, valid trigger, or established support files.
+2. Compare the behaviors instead of the wording.
+3. Transfer only unique and current guidance.
+4. Resolve each conflict explicitly. Prefer safer guidance that has stronger evidence.
+5. Remove duplicate text and stale links.
+6. Validate the destination before deleting the redundant skill.
+7. Find and update references to the removed skill name.
 
-For revisions, preserve useful local conventions but do not perpetuate invalid frontmatter, broken references, or harness-specific assumptions without documenting them.
+During revisions, preserve useful conventions. Correct invalid frontmatter, broken links, and undocumented harness assumptions.
 
 ## Safety and trust
 
-Skills can instruct agents to execute code and perform destructive actions.
+Skills can direct agents to run code or perform destructive operations.
 
 - Review third-party skills and scripts before enabling them.
-- Never embed credentials, tokens, private URLs, or secrets.
-- Require explicit authorization for deletion, publishing, deployments, remote mutations, or bulk edits unless the user's request already grants that exact scope.
-- Prefer dry-run and read-only defaults.
-- Bound filesystem and network scope.
-- Verify generated scripts independently before presenting the skill as safe.
+- Do not store credentials, tokens, private URLs, or secrets.
+- Require authorization for deletion, publication, deployment, remote changes, and bulk edits.
+- Treat the user's request as authorization only when it grants the exact operation and scope.
+- Prefer read-only operations and dry runs.
+- Limit filesystem and network scope.
+- Verify generated scripts before you describe the skill as safe.
 
 ## Validation checklist
 
-- [ ] `SKILL.md` starts with YAML frontmatter at byte zero.
-- [ ] `name` and `description` satisfy the Agent Skills constraints.
-- [ ] Directory name matches `name`.
-- [ ] Description accurately separates this skill from neighboring skills.
-- [ ] Body is non-empty and contains an actionable workflow.
-- [ ] Referenced scripts, references, and assets exist.
+- [ ] YAML frontmatter starts at byte zero.
+- [ ] `name` and `description` meet Agent Skills requirements.
+- [ ] The directory name matches `name`.
+- [ ] The description distinguishes this skill from nearby skills.
+- [ ] The body contains an actionable workflow.
+- [ ] Each linked script, reference, and asset exists.
 - [ ] Relative paths resolve from the skill directory.
-- [ ] Dependencies and compatibility constraints are documented.
-- [ ] Destructive actions have authorization and verification rules.
-- [ ] No secrets or machine-specific paths were accidentally included.
-- [ ] Supporting scripts have been syntax-checked or exercised safely.
-- [ ] One positive and one negative trigger scenario were considered.
+- [ ] The skill documents dependencies and compatibility limits.
+- [ ] Destructive actions include authorization and verification rules.
+- [ ] The skill contains no secrets or accidental machine-specific paths.
+- [ ] Support scripts pass syntax checks or safe tests.
+- [ ] One positive and one negative trigger case were tested.
 - [ ] The target harness can discover the skill after any required reload.
 
 ## Harness notes
 
-- **Pi:** recursively discovers directories containing `SKILL.md` from configured skill roots. The current session may require a restart before a newly created skill appears.
-- **Cross-harness libraries:** keep one canonical copy and expose it through supported skill directories, settings, or symlinks rather than maintaining drifting copies.
-- **Harness-specific metadata:** keep it optional and namespaced. The Markdown workflow must remain useful when another harness ignores that metadata.
+- **Pi:** Pi finds `SKILL.md` files recursively in configured skill roots. Restart the session when a new skill does not appear.
+- **Cross-harness libraries:** Keep one canonical copy. Use supported directories, settings, or symbolic links to expose it.
+- **Harness metadata:** Keep harness-specific metadata optional and namespaced. The Markdown workflow must work when another harness ignores that metadata.
