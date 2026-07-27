@@ -136,6 +136,7 @@ Use targeted `nix eval` for the exact service attribute. Confirm the generated `
 - Do not use `lib.optionalAttrs pkgs.stdenv...` in a Home Manager module `config` value when `pkgs` is supplied by the module system; `optionalAttrs` forces its condition during module pushdown and can cause `_module.args.pkgs` infinite recursion. Use `lib.mkIf pkgs.stdenv.isLinux { ... }` / `lib.mkIf pkgs.stdenv.isDarwin { ... }` inside `lib.mkMerge` for platform-specific service definitions in real Home Manager modules.
 - For launchd, prefer `ProgramArguments = [ exe "--flag" value ];` over a single shell command string; launchd does not need shell quoting for list arguments.
 - Do not activate a system generation as incidental verification when the checkout contains unrelated changes.
+- For service env vars that should come from the user's declarative Home Manager environment, use the Home Manager config source (for example `config.home.sessionVariables.SSH_AUTH_SOCK or null`) rather than assuming omission means "inherit the user env". Omitting `Service.Environment` inherits only the systemd user manager environment, which may differ from the user's Home Manager session variables and can point at a stale agent (e.g. GNOME Keyring/GCR instead of 1Password). This is a common root cause of git-sync services timing out on SSH auth every cycle.
 - `--skip-build` is suitable only when the server's static assets are already available; otherwise use the application's documented build/deployment path.
 
 ## Verification

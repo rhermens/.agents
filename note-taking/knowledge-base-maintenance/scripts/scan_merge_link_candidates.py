@@ -23,6 +23,9 @@ import sys
 import unicodedata
 from collections import Counter, defaultdict
 
+# Todo checkbox pattern — notes containing this pattern must NEVER be deleted
+TODO_RE = re.compile(r"^\s*[-*+]?\s*\[[ xX>]\]", re.M)
+
 DEFAULT_EXCLUDE_DIRS = {".git", ".obsidian", "node_modules", ".stfolder", ".sync"}
 FRONT_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.S)
 CODE_RE = re.compile(r"```.*?```", re.S)
@@ -137,6 +140,7 @@ def main() -> int:
             "tokens": tokens,
             "tf": Counter(tokens),
             "title_tokens": title_tokens(p.stem) + sum((title_tokens(a) for a in aliases), []),
+            "has_todos": bool(TODO_RE.search(txt)),
         })
 
     n = len(notes)
@@ -219,6 +223,7 @@ def main() -> int:
         "duplicate_id_groups": groups(by_id),
         "merge_candidates": pairs[:100],
         "explicit_unlinked_mentions": mentions[:150],
+        "protected_todo_notes": [note["path"] for note in notes if note["has_todos"]],
     }
     out = Path("/tmp/obsidian_note_scan.json")
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -232,9 +237,12 @@ def main() -> int:
     print("\nTop merge candidates:")
     for r in pairs[:25]:
         print(f"  - {r['a']} <-> {r['b']} | cos={r['cosine']} title={r['title_overlap']} linked={r['linked']} words={r['words']}")
-    print("\nTop unlinked title mentions:")
+    print(f"\nTop unlinked title mentions:")
     for r in mentions[:25]:
         print(f"  - {r['source']} -> {r['target']} via {r['phrase']!r}; ctx={r['context'][:180]}")
+    print(f"\nProtected todo notes (never delete): {len(report['protected_todo_notes'])}")
+    for p in report['protected_todo_notes'][:25]:
+        print(f"  - {p}")
     print(f"\nStructured report: {out}")
     return 0
 

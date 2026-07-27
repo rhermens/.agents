@@ -22,6 +22,7 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
 - Watch for nested mirror directories, e.g. `Archive/Foo/Archive/Foo`, where many files are body-identical. Report whether mirrored pairs diverge before recommending deletion.
 - Treat false positives conservatively: generic titles such as `Index`, `Delete`, `Monitoring`, `Extra costs`, `Untitled`, or personal/work cross-domain homonyms should be manually reviewed, not auto-linked.
 - Do not delete notes just because they are short. Only remove notes that are clearly empty, frontmatter-only, scratch/trash, or old orphan stubs with little standalone meaning and no in/out wikilinks/backlinks.
+- **NEVER delete notes containing todo items** (`- [ ]` or `- [x]`). This includes notes where todos are nested (indented) or mixed with other content. If a note has any unchecked or checked todo checkbox, it must be preserved regardless of orphan status, age, or word count. This is a hard rule — no exceptions, no "conservative" deletions of todo notes.
 
 ## Workflow
 
@@ -42,6 +43,7 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
    - merge duplicates by preserving the richer/canonical note, adding source aliases/IDs when useful, and deleting the source only after verifying the destination contains the useful content,
    - add only high-confidence wikilinks; avoid generic homonyms and personal/work cross-domain collisions,
    - remove only notes that satisfy the conservative deletion criteria above,
+   - **before deleting any note, check whether it contains todo checkboxes** (`- [ ]`, `- [x]`, `- [X]`, `- [>]`). If it does, do NOT delete it — skip it and note it in the report as a protected todo note. This check is mandatory and overrides all other deletion criteria (orphan status, age, word count, empty/stub classification).
    - leave a root note named like `Knowledge Base Maintenance Diff YYYY-MM-DD HHMMSS.md` containing the summary, file list/name-status, and representative unified diff.
 9. Final answer should include:
    - vault path and note count,
