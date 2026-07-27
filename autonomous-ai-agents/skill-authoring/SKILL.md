@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible harnesses, including Pi, Claude Code, Codex, and Hermes Agent.
 metadata:
   author: Roy Hermens
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Skill Authoring
@@ -129,6 +129,23 @@ Do not stuff the workflow into the description. Do not make several skills claim
 - Delete no-op prose such as “be careful,” “be thorough,” or “follow best practices.”
 
 Use strong rules sparingly. Reserve **must**, **always**, and **never** for genuine invariants; excessive absolutes make skills brittle or contradictory.
+
+## Write clear technical instructions
+
+Apply these ASD-STE100-inspired principles unless the skill's domain requires different terminology or sentence structure:
+
+- Use one consistent term for each concept. Do not alternate between synonyms for stylistic variety.
+- Use familiar words with one clear meaning. Define necessary domain-specific terms where readers first need them.
+- Prefer active voice. Write agent actions in the imperative form, such as “Validate the file.”
+- Put one instruction in each sentence or numbered step, except when actions must occur at the same time.
+- Put a condition before its instruction and separate it clearly, such as “If validation fails, stop the workflow.”
+- Keep instructions concise. As a practical target, use no more than 20 words for an instruction and 25 words for descriptive text.
+- Give each paragraph one topic. Use short paragraphs, headings, and vertical lists to show structure.
+- Use notes only for information. Do not hide required actions in notes or explanatory prose.
+- State safety information explicitly: identify the hazard, its possible consequence, and the action that prevents it.
+- Preserve exact commands, identifiers, API names, quotations, and required legal or domain terminology even when they exceed these targets.
+
+These principles improve clarity but do not by themselves make a skill ASD-STE100 compliant. Claim compliance only after checking the complete text against the current writing rules and controlled dictionary.
 
 ## Progressive disclosure
 
