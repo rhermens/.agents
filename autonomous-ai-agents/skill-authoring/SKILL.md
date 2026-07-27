@@ -146,8 +146,6 @@ Apply these ASD-STE100-inspired principles unless the domain requires different 
 - Identify each hazard, its possible consequence, and the action that prevents it.
 - Preserve exact commands, identifiers, API names, quotations, and required domain terms.
 
-These principles improve clarity, but they do not prove ASD-STE100 compliance. Check the complete text against the current rules and dictionary before claiming compliance.
-
 ## Progressive disclosure
 
 The harness loads all of `SKILL.md` when the skill activates. Keep this file focused.
