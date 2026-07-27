@@ -21,7 +21,7 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
   5. thematic/similarity-only link candidates.
 - Watch for nested mirror directories, e.g. `Archive/Foo/Archive/Foo`, where many files are body-identical. Report whether mirrored pairs diverge before recommending deletion.
 - Treat false positives conservatively: generic titles such as `Index`, `Delete`, `Monitoring`, `Extra costs`, `Untitled`, or personal/work cross-domain homonyms should be manually reviewed, not auto-linked.
-- Do not delete notes just because they are short. Only remove notes that are clearly empty, frontmatter-only, scratch/trash, or old orphan stubs with little standalone meaning and no in/out wikilinks/backlinks.
+- Do not delete notes just because they are short. A body under 10 words with no wikilinks or backlinks is only a triage signal, never sufficient deletion evidence. Only remove notes that are clearly empty, frontmatter-only, scratch/trash, or old orphan stubs with little standalone meaning and no in/out wikilinks/backlinks.
 - **NEVER delete notes containing todo items** (`- [ ]` or `- [x]`). This includes notes where todos are nested (indented) or mixed with other content. If a note has any unchecked or checked todo checkbox, it must be preserved regardless of orphan status, age, or word count. This is a hard rule — no exceptions, no "conservative" deletions of todo notes.
 
 ## Workflow
@@ -40,8 +40,9 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
    - thematic similarity pairs that are not already linked.
 7. Read representative high-ranking notes before making the final recommendation so the final answer can filter obvious false positives.
 8. For authorized edits:
-   - merge duplicates by preserving the richer/canonical note, adding source aliases/IDs when useful, and deleting the source only after verifying the destination contains the useful content,
+   - merge duplicates by preserving the richer/canonical note, preferring the more meaningful path or the note with more backlinks, adding source aliases/IDs when useful, and deleting the source only after verifying the destination contains the useful content,
    - add only high-confidence wikilinks; avoid generic homonyms and personal/work cross-domain collisions,
+   - wikilink insertion is allowed in todo-bearing notes when the checkbox syntax is preserved byte-for-byte; the todo protection rule prohibits deletion, not safe modification,
    - remove only notes that satisfy the conservative deletion criteria above,
    - **before deleting any note, check whether it contains todo checkboxes** (`- [ ]`, `- [x]`, `- [X]`, `- [>]`). If it does, do NOT delete it — skip it and note it in the report as a protected todo note. This check is mandatory and overrides all other deletion criteria (orphan status, age, word count, empty/stub classification).
    - leave a root note named like `Knowledge Base Maintenance Diff YYYY-MM-DD HHMMSS.md` containing the summary, file list/name-status, and representative unified diff.
@@ -87,6 +88,7 @@ It writes `/tmp/obsidian_note_scan.json` and prints a human-readable summary. Th
 - Excalidraw `.excalidraw.md` files often contain generated text; exact duplicates are useful, but thematic similarity is often less meaningful.
 - Frontmatter IDs and aliases can cause self-mentions; search only the body when looking for missing wikilinks.
 - For link insertion, match explicit title/alias mentions case-insensitively but preserve the matched surface text in the wikilink alias, e.g. `contracts` -> `[[Folder/Contracts|contracts]]`. Mask existing wikilinks, URLs, and fenced code blocks before replacement.
+- Anchored replacements can accidentally consume characters from an adjacent line when the match crosses a line boundary. Anchor on unique surrounding context, then re-read the edited note or inspect `git diff` to verify neighboring lines and todo checkbox syntax are unchanged.
 - When detecting old orphan notes, remember that code-fenced diagrams, JSON, Mermaid, sheet blocks, and Excalidraw content may tokenize to zero or few words. Do not delete these as meaningless solely because word count is low; review representative content and prefer reporting/no deletion unless they are clearly empty/trash.
 - In sync-backed vaults, file mtimes may reflect sync/backup activity rather than note age; for date-titled daily/log notes, use the title/path date or frontmatter date when judging whether a note is old.
 - If archive mirrors exist, de-duplicate mirror copies in the report so the user sees one actionable recommendation instead of dozens of repeated pairs.
