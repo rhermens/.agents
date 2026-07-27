@@ -28,6 +28,8 @@ Such notes are typically placeholders or abandoned drafts and can be safely remo
 - Scan for plain‑text mentions of other note titles (case‑insensitive) that lack a corresponding `[[...]]` wikilink.
 - Insert a wikilink preserving the original casing as an alias: `contracts` → `[[Folder/Contracts|contracts]]`.
 - Exclude generic titles (Index, Untitled, etc.) and avoid cross‑domain homonyms.
+- Wikilink insertion is allowed inside todo-bearing notes (`- [ ]` / `- [x]`) as long as the checkbox syntax is preserved byte-for-byte. The "never delete todo notes" rule is a deletion rule, not a modification rule.
+- When using anchored find-and-replace (e.g. `patch`) to insert a wikilink on a list item, the `old_string` can match across a line boundary and silently swallow trailing characters from the next line. Always anchor on a unique surrounding context (e.g. include the line before and after, or the bullet plus a unique terminator), and re-read the file (or `git diff`) after every patch to confirm the surrounding lines are unchanged.
 
 ## Reference implementation
 
