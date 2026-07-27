@@ -199,13 +199,13 @@
     "created_at": "2026-07-21T02:45:15.491511+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T15:11:28.667971+00:00",
-    "last_used_at": "2026-07-27T06:04:45.414204+00:00",
-    "last_viewed_at": "2026-07-24T07:58:59.063863+00:00",
+    "last_used_at": "2026-07-27T07:39:08.889028+00:00",
+    "last_viewed_at": "2026-07-27T07:39:08.887979+00:00",
     "patch_count": 8,
     "pinned": false,
     "state": "active",
-    "use_count": 37,
-    "view_count": 24
+    "use_count": 38,
+    "view_count": 25
   },
   "scheduled-pr-review-digests": {
     "archived_at": null,
@@ -238,13 +238,13 @@
     "created_at": "2026-07-21T04:02:38.259375+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-21T04:44:07.775481+00:00",
-    "last_used_at": "2026-07-23T12:22:54.968105+00:00",
-    "last_viewed_at": "2026-07-23T12:22:54.966985+00:00",
+    "last_used_at": "2026-07-27T07:39:08.889530+00:00",
+    "last_viewed_at": "2026-07-27T07:39:08.888621+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 8,
-    "view_count": 8
+    "use_count": 9,
+    "view_count": 9
   },
   "test-driven-development": {
     "archived_at": null,
