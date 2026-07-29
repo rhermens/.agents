@@ -13,7 +13,7 @@ metadata:
 
 # Test-Driven Development (TDD)
 
-## Overview
+## Usage
 
 Use strict test-first development when the task has meaningful behavior or regression risk.
 
