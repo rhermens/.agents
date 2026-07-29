@@ -1,7 +1,7 @@
 ---
 name: systematic-debugging
 description: "4-phase root cause debugging: understand bugs before fixing."
-version: 1.1.0
+version: 1.1.1
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
 platforms: [linux, macos, windows]
@@ -104,6 +104,8 @@ You MUST complete each phase before proceeding to the next.
 - Make it faster: cache setup, narrow scope, skip unrelated initialization.
 - Make the signal sharper: assert the exact symptom, not generic success.
 - Make it more deterministic: pin time, seed randomness, isolate filesystem, freeze network.
+- For lifecycle bugs, require both passing assertions and natural process exit.
+- Bound lifecycle checks with a timeout. If the process hangs, inspect open handles with the test runner's diagnostics.
 
 For non-deterministic bugs, the immediate goal is a higher reproduction rate, not perfection. Run the trigger 100x, parallelize, add stress, narrow timing windows, or inject sleeps. A 50% flake is debuggable; a 1% flake usually is not.
 
