@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible harness with access to the current session. Skill edits require filesystem access and explicit authorization.
 metadata:
   author: Roy Hermens
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Skill Curating
@@ -35,8 +35,8 @@ Use only available session evidence. Do not invent missing events or claim acces
 
 1. **Summarize the outcome.** Record the request, result, verification state, and unresolved blockers.
 2. **Extract evidence.** Find user corrections, repeated friction, failed approaches, safeguards, and successful non-obvious workflows.
-3. **Form candidates.** Convert each useful observation into one concrete behavior change.
-4. **Classify each candidate.** Choose an existing skill, a new skill, project instructions, or no durable change.
+3. **Form candidates.** Convert each observation into one transferable behavior change. Remove project, framework, tool, and job-specific terms.
+4. **Classify each candidate.** Choose a broadly applicable existing skill, a new skill, or no durable change.
 5. **Inspect nearby skills.** Read the full text of likely destination skills and overlapping descriptions.
 6. **Evaluate each candidate.** Apply the acceptance rules below and reject weak candidates.
 7. **Recommend or improve.** Follow the selected operating mode.
@@ -66,6 +66,7 @@ Accept a candidate only when all conditions are true:
 - The change improves future agent behavior.
 - The behavior is likely to recur.
 - The guidance is stable beyond the current task.
+- The behavior applies across projects, frameworks, programming languages, and non-programming work.
 - The destination owns the behavior.
 - Existing instructions do not already cover it.
 - The change does not encode secrets, private data, or incidental identifiers.
@@ -77,6 +78,7 @@ Reject candidates that are:
 - one-time commands or temporary workarounds,
 - product decisions that belong in project documentation,
 - permanent repository rules that belong in `AGENTS.md`,
+- project-specific, framework-specific, language-specific, tool-specific, or job-specific guidance,
 - large logs, transcripts, or copied external documentation,
 - narrow details that make a broad skill trigger less accurately.
 
@@ -84,11 +86,10 @@ Reject candidates that are:
 
 Use this order:
 
-1. Improve an existing skill that already owns the behavior.
-2. Add a focused reference or deterministic script to that skill.
+1. Improve a broadly applicable existing skill that already owns the behavior.
+2. Add broadly applicable support material to that skill.
 3. Recommend a new skill when no existing skill has the correct trigger.
-4. Recommend project instructions for repository-wide permanent rules.
-5. Make no change when the lesson is not durable.
+4. Make no change when the lesson is not durable.
 
 Prefer revising one destination over copying guidance into several skills.
 
@@ -122,6 +123,10 @@ For each accepted candidate, report:
 - exact behavior to add, remove, or clarify,
 - expected benefit,
 - confidence as high, medium, or low.
+
+Write each recommendation as domain-neutral behavior that applies to programming and non-programming work.
+
+Do not name the session's project, framework, language, tool, role, or job in the proposed action.
 
 Do not produce a patch unless the user requests one. Limit the report to the highest-value candidates.
 
