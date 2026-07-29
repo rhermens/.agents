@@ -65,14 +65,10 @@ See the `nix-user-services` skill's `references/ssh-agent-sockets.md` for the co
 ## Verification
 
 ```text
-healthy ⇔ timeout_works ∧ next_run_succeeds ∧ exactly_once
-          ∧ repository_clean ∧ upstream_aligned ∧ process_quiescent
+healthy ⇔ forced_hang_times_out ∧ next_fresh_run_succeeds
+          ∧ pending_changes_committed_once ∧ pushed_to_current_branch
+          ∧ repository_clean ∧ upstream_aligned ∧ no_sustained_cpu_use
 ```
-
-- `timeout_works`: The configured timeout terminates a forced-hang fixture.
-- `next_run_succeeds`: The next scheduled invocation starts a fresh process and succeeds.
-- `exactly_once`: Pending changes are committed once and pushed to the current branch.
-- `process_quiescent`: The service sleeps or exits without sustained CPU use.
 
 ## References
 

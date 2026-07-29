@@ -64,30 +64,20 @@ Treat a single event as sufficient only when the lesson is clear, reusable, and 
 Use this rule:
 
 ```text
-accept(c) ⇔ evidenced(c) ∧ improves(c) ∧ recurring(c) ∧ stable(c)
-            ∧ domain_neutral(c) ∧ owned(c) ∧ novel(c) ∧ sanitized(c)
+accept(c) ⇔ evidenced(c) ∧ improves_behavior(c) ∧ recurring(c) ∧ stable(c)
+            ∧ domain_neutral(c) ∧ destination_owns(c) ∧ novel(c)
+            ∧ sanitized(c) ∧ trigger_preserving(c)
 ```
 
-- `evidenced`: Session evidence supports the change.
-- `improves`: The change improves future agent behavior.
-- `recurring`: The behavior is likely to recur.
-- `stable`: The guidance remains valid beyond the current task.
-- `domain_neutral`: The behavior applies across projects, frameworks, languages, and non-programming work.
-- `owned`: The destination skill owns the behavior.
-- `novel`: Existing instructions do not already cover it.
-- `sanitized`: The change contains no secrets, private data, or incidental identifiers.
+- `domain_neutral`: Applies across projects, frameworks, languages, and non-programming work.
+- `sanitized`: Contains no secrets, private data, or incidental identifiers.
+- `trigger_preserving`: Does not make a broad skill trigger less accurately.
 
-Reject a candidate if it is generic, speculative, temporary, misplaced, copied, domain-specific, or trigger-narrowing.
+Reject a candidate when any conjunct is false.
 
 ## Formalization review
 
-Follow the formalization method in `skill-authoring`.
-
-Good candidates are activation rules, invariants, thresholds, dependencies, rankings, and completion criteria.
-
-Keep workflows, recovery steps, authorization boundaries, commands, and qualitative judgments in prose.
-
-Preserve each original condition. Define unfamiliar predicates beside the statement. Reject formulas whose definitions erase the token savings.
+Apply `skill-authoring`'s formalization rule while forming candidates. Keep a formula only when it preserves every condition and reduces tokens and ambiguity.
 
 ## Choose the destination
 

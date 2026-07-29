@@ -43,10 +43,7 @@ Use this decision rule:
 create_skill(t) ⇔ recurring(t) ∧ specialized(t) ∧ stable_trigger(t) ∧ self_contained(t)
 ```
 
-- `recurring`: The task will probably occur again.
-- `specialized`: Special process or domain knowledge improves the result.
-- `stable_trigger`: A stable trigger and completion condition describe the behavior.
-- `self_contained`: The skill contains its guidance or links to local support files.
+`self_contained` means the skill contains its guidance or links to local support files.
 
 Use another mechanism in these cases:
 
@@ -149,17 +146,15 @@ Keep sequences, recovery steps, authorization boundaries, commands, and qualitat
 
 Apply these rules:
 
-- Use a code block with plain-text notation.
-- Use one predicate name for each concept.
-- Define every unfamiliar symbol or predicate immediately below the statement.
-- Use `⇔` only when both directions are required.
-- Use `⇒` for one-way consequences and `∧`, `∨`, `¬` for Boolean logic.
-- State measurable units and threshold inclusivity.
-- Keep exceptions beside the statement they limit.
-- Replace prose only when the formal statement preserves every condition.
-- Prefer a prose-and-formula hybrid when definitions or operational actions remain necessary.
+- Use plain-text notation in a code block.
+- Keep one predicate name per concept. Define unfamiliar predicates beside the statement.
+- Use `⇔` for equivalence and `⇒` for one-way consequences.
+- Use `∧`, `∨`, and `¬` only for Boolean logic.
+- State units, inclusive boundaries, and exceptions explicitly.
+- Preserve every original condition.
+- Use a prose-and-formula hybrid when operational actions remain.
 
-Reject formalization when definitions cost at least as many tokens as the original rule or introduce mathematical ambiguity.
+Reject formalization if definitions erase the token savings or introduce ambiguity.
 
 ## Write clear technical instructions
 
