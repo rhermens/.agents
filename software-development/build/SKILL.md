@@ -136,20 +136,6 @@ Validate the following before shipping. If any guarantee cannot be validated, th
 - For pnpm script argument forwarding, use the repo's actual script shape: `pnpm run test -- <jest args>` forwards to Jest, while Turbo filters belong on `turbo`, not after `pnpm run build --`.
 - If a large combined targeted Jest run crashes at the process/native level after individual suites pass (for example a segmentation fault with no test assertion failure), do not loop the identical command. Split the same affected suite set into smaller `pnpm run test -- ... --runInBand` invocations, verify each passes, and report the original crash as a runner/process issue plus the passing split evidence.
 
-## NestJS CQRS Endpoint Refactors
-
-- When renaming a command flow, rename the class, command file, handler file, handler spec, DTO file/classes, controller imports, and module provider registration together; then search for stale old names before verification.
-- Prefer domain verbs over CRUD verbs when semantics are not creation. If a flow only attaches an existing entity to state, name it like `MonitorOrganizationCommand`, not `CreateMonitoredOrganizationCommand`.
-- If the user says the target entity must already exist, do not use `findOneAndUpdate(..., { upsert: true })`. Validate related objects, `findOne` the target, throw `NotFoundException` on miss, `updateOne` the association, then publish events.
-- Add/update tests for both the success path and the missing-entity 404 path; on 404 assert no update and no event publish.
-- For event-backed membership/assignment changes mirrored to an external provider, read previous state before mutating, emit add/remove events for every transition, and make saga handlers use immutable event/command target IDs rather than mutable current entity state. See `references/nestjs-event-backed-membership-sync.md`.
-- When multiple NestJS CQRS handlers duplicate monitoring-list membership side effects, extract them into an injectable feature service. The service should own complete domain operations, not just event plumbing: add-to-list/move-to-list should mutate `monitoringListId` and privately publish add/remove events; remove-from-list should scope the query, unset membership, and privately publish removal events. Have handlers pass intention-specific selectors or previous-state context. See `references/nestjs-monitoring-list-membership-service.md`.
-- See `references/nestjs-cqrs-endpoint-refactors.md` for a concise checklist and event-payload pitfalls from a DR-7395 monitoring-list endpoint refactor.
-- See `references/nestjs-e2e-endpoint-refactors.md` for e2e test updates after DTO/endpoint semantic changes, including membership-list fixture setup and Mongo `$unset` assertions.
-- When adding a durable NestJS data migration/backfill, wire the whole migration path, not only the migration class: package dependency, TS project reference, `MongooseMigrationsModule`, provider registration, exported cross-module injection tokens, idempotent upserts, scoped backfill, and startup/e2e verification. See `references/nestjs-mongoose-migrations.md`.
-- When upstream DRS/SaaS monitoring endpoints add monitoring-list parameters, trace the exact DTO field names from the upstream PR and wire caller env config through the domain service, request types, HTTP client body/query params, `.env.example`, env validation, and client/service tests. Body and query names can differ (`addToMonitoringListId` vs `monitoringListId`). See `references/drs-monitoring-list-id-client-wiring.md`.
-- When a NestJS organization-events endpoint becomes monitoring-list scoped, wire `monitoringListId` through DTO/query/handler/service/client/mocks, load the list by `_id` + `clientId`, and pass the list's `portfolioId` explicitly to the provider client instead of using cached/default portfolio state. See `references/nestjs-monitoring-events-list-scoping.md`.
-
 ## Bounded Context Refactors
 
 When splitting shared DTOs or domain-facing types by bounded context:
