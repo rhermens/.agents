@@ -112,7 +112,7 @@ Apply these constraints:
 
 Use `~/.config/wt/config.lua` only for defaults the user wants across all repositories.
 
-## Validation
+## Verification
 
 After `wt` returns, verify each requested outcome:
 
