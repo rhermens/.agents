@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible harnesses, including Pi, Claude Code, Codex, and Hermes Agent.
 metadata:
   author: Roy Hermens
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Skill Authoring
@@ -37,12 +37,16 @@ Do not create a skill for one task or generic advice. Put permanent repository r
 
 ## Decide whether a skill is appropriate
 
-Create a skill only when all these conditions are true:
+Use this decision rule:
 
-- The task will probably occur again.
-- Special process or domain knowledge improves the result.
-- A stable trigger and completion condition can describe the behavior.
-- The skill can contain its guidance or link to local support files.
+```text
+create_skill(t) ⇔ recurring(t) ∧ specialized(t) ∧ stable_trigger(t) ∧ self_contained(t)
+```
+
+- `recurring`: The task will probably occur again.
+- `specialized`: Special process or domain knowledge improves the result.
+- `stable_trigger`: A stable trigger and completion condition describe the behavior.
+- `self_contained`: The skill contains its guidance or links to local support files.
 
 Use another mechanism in these cases:
 
@@ -131,6 +135,32 @@ Do not put the workflow in the description. Do not let several skills claim broa
 
 Use **must**, **always**, and **never** only for real invariants. Too many absolute rules make skills brittle or contradictory.
 
+## Formalize declarative rules
+
+Use a formal statement when it reduces both tokens and valid interpretations.
+
+```text
+formalize(r) ⇔ declarative(r) ∧ terms_defined(r) ∧ shorter(r) ∧ less_ambiguous(r)
+```
+
+Good candidates include activation rules, invariants, thresholds, dependencies, rankings, and completion criteria.
+
+Keep sequences, recovery steps, authorization boundaries, commands, and qualitative judgments in prose.
+
+Apply these rules:
+
+- Use a code block with plain-text notation.
+- Use one predicate name for each concept.
+- Define every unfamiliar symbol or predicate immediately below the statement.
+- Use `⇔` only when both directions are required.
+- Use `⇒` for one-way consequences and `∧`, `∨`, `¬` for Boolean logic.
+- State measurable units and threshold inclusivity.
+- Keep exceptions beside the statement they limit.
+- Replace prose only when the formal statement preserves every condition.
+- Prefer a prose-and-formula hybrid when definitions or operational actions remain necessary.
+
+Reject formalization when definitions cost at least as many tokens as the original rule or introduce mathematical ambiguity.
+
 ## Write clear technical instructions
 
 Apply these ASD-STE100-inspired principles unless the domain requires different language:
@@ -200,6 +230,7 @@ Skills can direct agents to run code or perform destructive operations.
 - [ ] The directory name matches `name`.
 - [ ] The description distinguishes this skill from nearby skills.
 - [ ] The body contains an actionable workflow.
+- [ ] Formal statements preserve every original condition and define unfamiliar terms.
 - [ ] Each linked script, reference, and asset exists.
 - [ ] Relative paths resolve from the skill directory.
 - [ ] The skill documents dependencies and compatibility limits.
