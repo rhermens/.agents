@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
-description: "TDD: enforce RED-GREEN-REFACTOR, tests before code."
-version: 1.1.0
+description: "Apply strict RED-GREEN-REFACTOR to behaviorally significant logic, regression-prone bug fixes, complex refactors, or explicit TDD requests. Do not activate for basic scaffolding, configuration, dependency wiring, boilerplate, documentation, or trivial framework handlers unless the user requests TDD."
+version: 1.2.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
 platforms: [linux, macos, windows]
@@ -15,42 +15,42 @@ metadata:
 
 ## Overview
 
-Write the test first. Watch it fail. Write minimal code to pass.
+Use strict test-first development when the task has meaningful behavior or regression risk.
 
-**Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
-
-**Violating the letter of the rules is violating the spirit of the rules.**
+Once selected, write one test, watch it fail, then write minimal code to pass.
 
 ## When to Use
 
-**Always:**
-- New features
-- Bug fixes
-- Refactoring
-- Behavior changes
+Use this skill when any condition applies:
 
-**Exceptions (ask the user first):**
-- Throwaway prototypes
-- Generated code
-- Configuration files
+- The user explicitly requests TDD or tests-first development.
+- A bug fix needs a regression test.
+- New domain or business logic has meaningful branches or edge cases.
+- A refactor changes behavior or carries substantial regression risk.
+- The repository requires test-first development for the affected area.
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+Do not activate this skill automatically for:
 
-## The Iron Law
+- basic project or framework scaffolding,
+- dependency and build configuration,
+- boilerplate entry points or trivial handlers,
+- documentation-only or formatting-only changes,
+- generated code,
+- simple wiring that contains no domain decisions.
+
+For excluded work, use proportionate verification. Follow existing tests when they add clear regression value.
+
+Do not ask the user for permission merely to skip TDD on excluded work.
+
+## The Test-First Rule
+
+When this skill applies:
 
 ```
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+NO BEHAVIORAL PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 ```
 
-Write code before the test? Delete it. Start over.
-
-**No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
-
-Implement fresh from tests. Period.
+If behavioral code exists before its test, remove it and restart that behavior from the failing test.
 
 ## Red-Green-Refactor Cycle
 
@@ -354,9 +354,11 @@ Never fix bugs without a test.
 
 ## Final Rule
 
+When this skill applies:
+
 ```
-Production code → test exists and failed first
+Behavioral production code → test exists and failed first
 Otherwise → not TDD
 ```
 
-No exceptions without the user's explicit permission.
+Outside the activation scope, use the repository's normal verification workflow.
