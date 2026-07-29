@@ -1,7 +1,7 @@
 ---
 name: github-code-review
 description: Acquire GitHub pull request metadata, discussion, diffs, and source code for a code review. Use when a review needs GitHub-hosted PR context or a local checkout. Delegate all analysis and findings to the review skill.
-version: 2.0.0
+version: 2.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -140,10 +140,9 @@ The `review` skill owns code analysis, tests, diagnostics, severity, findings, a
 
 ## Completion criteria
 
-Acquisition is complete when:
+```text
+complete ⇔ target_unambiguous ∧ head_sha_recorded ∧ tree_delta_explicit
+           ∧ review_context_available ∧ ¬remote_state_changed
+```
 
-- the repository and PR are unambiguous,
-- the reviewed head SHA is recorded,
-- local and remote tree differences are explicit,
-- the diff and required full-file context are available,
-- no remote state was changed.
+`review_context_available` means the diff and required full-file context are available.

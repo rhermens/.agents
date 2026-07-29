@@ -17,6 +17,21 @@ Use current evidence to recommend a model for a workload rather than declaring a
 6. **Give a decision, not merely a table.** Identify the quality winner, value winner, and recommended primary/fallback policy.
 7. **Attach dates or freshness cues.** Models, discounts, routers, benchmarks, and provider availability change quickly.
 
+## Selection rule
+
+Use constraints before preferences:
+
+```text
+eligible(m, w) ⇔ available(m) ∧ capabilities(m) ⊇ requirements(w)
+                 ∧ context(m) ≥ required_context(w)
+                 ∧ cost(m, w) ≤ budget(w)
+recommended(w) = argmax utility(m, w), for eligible models m
+```
+
+`argmax` means the eligible model with the highest workload-specific utility. Derive utility from the user's quality, reliability, latency, privacy, and cost priorities.
+
+If no model is eligible, identify the violated constraints. Ask which constraint may change.
+
 ## Router Evaluation
 
 When assessing an automatic router:

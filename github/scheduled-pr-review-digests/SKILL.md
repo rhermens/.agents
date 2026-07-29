@@ -12,7 +12,16 @@ Use this skill when a cron/scheduled job asks to scan repositories for open PRs 
 1. **Authenticate non-interactively.** Use `gh api user --jq .login`; if `gh auth status` is stale, source the GitHub auth env and set `GH_TOKEN` without printing it.
 2. **List PRs for every requested repo.** Use `gh pr list -R OWNER/REPO --state open --limit 100 --json number,title,author,headRefName,baseRefName,isDraft,updatedAt,createdAt,url,additions,deletions,changedFiles,reviewDecision,statusCheckRollup` and filter out drafts exactly when requested.
 3. **Fetch details for every candidate.** Use `gh pr view ... --json reviews,files,commits,headRefOid,statusCheckRollup` so you can determine the user's latest review state and whether new commits landed after it.
-4. **Classify review need.** A PR needs attention when the user has not reviewed it, or when their latest review predates the latest commit. Treat dismissed/stale reviews as not sufficient when the PR still shows `REVIEW_REQUIRED`/`CHANGES_REQUESTED`.
+4. **Classify review need.** Apply this rule:
+
+   ```text
+   needs_attention(p, u) ⇔ ¬reviewed(p, u)
+                             ∨ latest_review(p, u) < latest_commit(p)
+                             ∨ (review_stale_or_dismissed(p, u)
+                                ∧ decision(p) ∈ {REVIEW_REQUIRED, CHANGES_REQUESTED})
+   ```
+
+   Compare timestamps in UTC. `reviewed` means the user submitted a review for the current PR.
 5. **Rank by importance and order-of-magnitude size.** Prioritize destructive/financial/auth/permission/external-provider/date/deadline changes above cosmetic/test-only/dependency-only changes. Use additions/deletions/changed files as rough size buckets, not as the only ordering signal.
 6. **Do a targeted quick review for high-risk PRs.** Inspect PR body, changed files, CI, and targeted diffs/full files around risky behavior. For full file context at the PR head, fetch `headRefOid` and use `gh api "repos/OWNER/REPO/contents/PATH?ref=$HEAD_SHA" --jq .content | base64 -d`.
 7. **Report only useful signal.** If nothing new genuinely needs the user's attention, return exactly `[SILENT]`. Otherwise start with the explicit count of PRs the user needs to review, followed by ranked items.

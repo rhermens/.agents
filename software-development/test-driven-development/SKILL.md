@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
 description: "Apply strict RED-GREEN-REFACTOR to behaviorally significant logic, regression-prone bug fixes, complex refactors, or explicit TDD requests. Do not activate for basic scaffolding, configuration, dependency wiring, boilerplate, documentation, or trivial framework handlers unless the user requests TDD."
-version: 1.2.0
+version: 1.3.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
 platforms: [linux, macos, windows]
@@ -21,26 +21,23 @@ Once selected, write one test, watch it fail, then write minimal code to pass.
 
 ## When to Use
 
-Use this skill when any condition applies:
+Use this activation rule:
 
-- The user explicitly requests TDD or tests-first development.
-- A bug fix needs a regression test.
-- New domain or business logic has meaningful branches or edge cases.
-- A refactor changes behavior or carries substantial regression risk.
-- The repository requires test-first development for the affected area.
+```text
+tdd(t) ⇔ explicit(t) ∨ repository_requires(t)
+         ∨ (¬excluded(t) ∧ (regression_fix(t) ∨ meaningful_logic(t) ∨ risky_refactor(t)))
+```
 
-Do not activate this skill automatically for:
+- `explicit`: The user requests TDD or tests-first development.
+- `repository_requires`: Repository rules require test-first work in the affected area.
+- `regression_fix`: A bug fix needs a regression test.
+- `meaningful_logic`: New domain or business logic has meaningful branches or edge cases.
+- `risky_refactor`: A refactor changes behavior or carries substantial regression risk.
+- `excluded`: Scaffolding, configuration, boilerplate, trivial handlers, documentation, formatting, generated code, or wiring without domain decisions.
 
-- basic project or framework scaffolding,
-- dependency and build configuration,
-- boilerplate entry points or trivial handlers,
-- documentation-only or formatting-only changes,
-- generated code,
-- simple wiring that contains no domain decisions.
+If `excluded(t) ∧ ¬explicit(t) ∧ ¬repository_requires(t)`, use proportionate verification. Follow existing tests when they add clear regression value.
 
-For excluded work, use proportionate verification. Follow existing tests when they add clear regression value.
-
-Do not ask the user for permission merely to skip TDD on excluded work.
+Do not ask permission merely to skip TDD on excluded work.
 
 ## The Test-First Rule
 
@@ -59,6 +56,7 @@ If behavioral code exists before its test, remove it and restart that behavior f
 Write one minimal test showing what should happen.
 
 **Good test:**
+
 ```python
 def test_retries_failed_operations_3_times():
     attempts = 0
@@ -74,9 +72,11 @@ def test_retries_failed_operations_3_times():
     assert result == 'success'
     assert attempts == 3
 ```
+
 Clear name, tests real behavior, one thing.
 
 **Bad test:**
+
 ```python
 def test_retry_works():
     mock = MagicMock()
@@ -84,9 +84,11 @@ def test_retry_works():
     result = retry_operation(mock)
     assert result == 'success'  # What about retry count? Timing?
 ```
+
 Vague name, tests mock not real code.
 
 **Requirements:**
+
 - One behavior per test
 - Clear descriptive name ("and" in name? Split it)
 - Real code, not mocks (unless truly unavoidable)
@@ -102,6 +104,7 @@ pytest tests/test_feature.py::test_specific_behavior -v
 ```
 
 Confirm:
+
 - Test fails (not errors from typos)
 - Failure message is expected
 - Fails because the feature is missing
@@ -115,12 +118,14 @@ Confirm:
 Write the simplest code to pass the test. Nothing more.
 
 **Good:**
+
 ```python
 def add(a, b):
     return a + b  # Nothing extra
 ```
 
 **Bad:**
+
 ```python
 def add(a, b):
     result = a + b
@@ -131,6 +136,7 @@ def add(a, b):
 Don't add features, refactor other code, or "improve" beyond the test.
 
 **Cheating is OK in GREEN:**
+
 - Hardcode return values
 - Copy-paste
 - Duplicate code
@@ -151,6 +157,7 @@ pytest tests/ -q
 ```
 
 Confirm:
+
 - Test passes
 - Other tests still pass
 - Output pristine (no errors, warnings)
@@ -162,6 +169,7 @@ Confirm:
 ### REFACTOR — Clean Up
 
 After green only:
+
 - Remove duplication
 - Improve names
 - Extract helpers
@@ -199,6 +207,7 @@ A tracer bullet is one end-to-end behavior slice. It proves the path works, teac
 **"I'll write tests after to verify it works"**
 
 Tests written after code pass immediately. Passing immediately proves nothing:
+
 - Might test the wrong thing
 - Might test implementation, not behavior
 - Might miss edge cases you forgot
@@ -209,6 +218,7 @@ Test-first forces you to see the test fail, proving it actually tests something.
 **"I already manually tested all the edge cases"**
 
 Manual testing is ad-hoc. You think you tested everything but:
+
 - No record of what you tested
 - Can't re-run when code changes
 - Easy to forget cases under pressure
@@ -219,6 +229,7 @@ Automated tests are systematic. They run the same way every time.
 **"Deleting X hours of work is wasteful"**
 
 Sunk cost fallacy. The time is already gone. Your choice now:
+
 - Delete and rewrite with TDD (high confidence)
 - Keep it and add tests after (low confidence, likely bugs)
 
@@ -227,6 +238,7 @@ The "waste" is keeping code you can't trust.
 **"TDD is dogmatic, being pragmatic means adapting"**
 
 TDD IS pragmatic:
+
 - Finds bugs before commit (faster than debugging after)
 - Prevents regressions (tests catch breaks immediately)
 - Documents behavior (tests show how to use code)
@@ -243,7 +255,7 @@ Tests-after are biased by your implementation. You test what you built, not what
 ## Common Rationalizations
 
 | Excuse | Reality |
-|--------|---------|
+| -------- | --------- |
 | "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
 | "I'll test after" | Tests passing immediately prove nothing. |
 | "Tests after achieve same goals" | Tests-after = "what does this do?" Tests-first = "what should this do?" |
@@ -293,7 +305,7 @@ Can't check all boxes? You skipped TDD. Start over.
 ## When Stuck
 
 | Problem | Solution |
-|---------|----------|
+| --------- | ---------- |
 | Don't know how to test | Write the wished-for API. Write the assertion first. Ask the user. |
 | Test too complicated | Design too complicated. Simplify the interface. |
 | Must mock everything | Code too coupled. Use dependency injection. |

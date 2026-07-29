@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible harness with access to the current session. Skill edits require filesystem access and explicit authorization.
 metadata:
   author: Roy Hermens
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # Skill Curating
@@ -36,12 +36,13 @@ Use only available session evidence. Do not invent missing events or claim acces
 1. **Summarize the outcome.** Record the request, result, verification state, and unresolved blockers.
 2. **Extract evidence.** Find user corrections, repeated friction, failed approaches, safeguards, and successful non-obvious workflows.
 3. **Form candidates.** Convert each observation into one transferable behavior change. Remove project, framework, tool, and job-specific terms.
-4. **Classify each candidate.** Choose a broadly applicable existing skill, a new skill, or no durable change.
-5. **Inspect nearby skills.** Read the full text of likely destination skills and overlapping descriptions.
-6. **Evaluate each candidate.** Apply the acceptance rules below and reject weak candidates.
-7. **Recommend or improve.** Follow the selected operating mode.
-8. **Verify the result.** Check scope, consistency, links, triggers, and authorization.
-9. **Report concisely.** State the outcome, evidence, changed paths, checks, and deferred recommendations.
+4. **Test formalization.** Formalize declarative rules only when this reduces tokens and valid interpretations.
+5. **Classify each candidate.** Choose a broadly applicable existing skill, a new skill, or no durable change.
+6. **Inspect nearby skills.** Read the full text of likely destination skills and overlapping descriptions.
+7. **Evaluate each candidate.** Apply the acceptance rules below and reject weak candidates.
+8. **Recommend or improve.** Follow the selected operating mode.
+9. **Verify the result.** Check scope, consistency, links, triggers, and authorization.
+10. **Report concisely.** State the outcome, evidence, changed paths, checks, and deferred recommendations.
 
 ## Evidence to inspect
 
@@ -60,27 +61,33 @@ Treat a single event as sufficient only when the lesson is clear, reusable, and 
 
 ## Candidate acceptance rules
 
-Accept a candidate only when all conditions are true:
+Use this rule:
 
-- Session evidence supports the change.
-- The change improves future agent behavior.
-- The behavior is likely to recur.
-- The guidance is stable beyond the current task.
-- The behavior applies across projects, frameworks, programming languages, and non-programming work.
-- The destination owns the behavior.
-- Existing instructions do not already cover it.
-- The change does not encode secrets, private data, or incidental identifiers.
+```text
+accept(c) ⇔ evidenced(c) ∧ improves(c) ∧ recurring(c) ∧ stable(c)
+            ∧ domain_neutral(c) ∧ owned(c) ∧ novel(c) ∧ sanitized(c)
+```
 
-Reject candidates that are:
+- `evidenced`: Session evidence supports the change.
+- `improves`: The change improves future agent behavior.
+- `recurring`: The behavior is likely to recur.
+- `stable`: The guidance remains valid beyond the current task.
+- `domain_neutral`: The behavior applies across projects, frameworks, languages, and non-programming work.
+- `owned`: The destination skill owns the behavior.
+- `novel`: Existing instructions do not already cover it.
+- `sanitized`: The change contains no secrets, private data, or incidental identifiers.
 
-- generic advice already expected from capable agents,
-- speculative conclusions without session evidence,
-- one-time commands or temporary workarounds,
-- product decisions that belong in project documentation,
-- permanent repository rules that belong in `AGENTS.md`,
-- project-specific, framework-specific, language-specific, tool-specific, or job-specific guidance,
-- large logs, transcripts, or copied external documentation,
-- narrow details that make a broad skill trigger less accurately.
+Reject a candidate if it is generic, speculative, temporary, misplaced, copied, domain-specific, or trigger-narrowing.
+
+## Formalization review
+
+Follow the formalization method in `skill-authoring`.
+
+Good candidates are activation rules, invariants, thresholds, dependencies, rankings, and completion criteria.
+
+Keep workflows, recovery steps, authorization boundaries, commands, and qualitative judgments in prose.
+
+Preserve each original condition. Define unfamiliar predicates beside the statement. Reject formulas whose definitions erase the token savings.
 
 ## Choose the destination
 

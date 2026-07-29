@@ -1,7 +1,7 @@
 ---
 name: unattended-git-services
 description: "Design, debug, and verify unattended Git synchronization services, including SSH-agent authorization and bounded network operations."
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos]
@@ -64,11 +64,15 @@ See the `nix-user-services` skill's `references/ssh-agent-sockets.md` for the co
 
 ## Verification
 
-- A forced-hang fixture is terminated by the configured timeout.
-- The next scheduled invocation starts with a fresh process and can succeed.
-- Pending changes are committed once and pushed to the current branch.
-- The repository is clean and aligned with its upstream afterward.
-- The service is sleeping normally or has exited, with no sustained CPU spin.
+```text
+healthy ⇔ timeout_works ∧ next_run_succeeds ∧ exactly_once
+          ∧ repository_clean ∧ upstream_aligned ∧ process_quiescent
+```
+
+- `timeout_works`: The configured timeout terminates a forced-hang fixture.
+- `next_run_succeeds`: The next scheduled invocation starts a fresh process and succeeds.
+- `exactly_once`: Pending changes are committed once and pushed to the current branch.
+- `process_quiescent`: The service sleeps or exits without sustained CPU use.
 
 ## References
 
