@@ -28,11 +28,7 @@ tdd(t) ⇔ explicit(t) ∨ repository_requires(t)
          ∨ (¬excluded(t) ∧ (regression_fix(t) ∨ meaningful_logic(t) ∨ risky_refactor(t)))
 ```
 
-- `explicit`: The user requests TDD or tests-first development.
-- `repository_requires`: Repository rules require test-first work in the affected area.
-- `regression_fix`: A bug fix needs a regression test.
-- `meaningful_logic`: New domain or business logic has meaningful branches or edge cases.
-- `risky_refactor`: A refactor changes behavior or carries substantial regression risk.
+- `meaningful_logic`: Domain or business logic with meaningful branches or edge cases.
 - `excluded`: Scaffolding, configuration, boilerplate, trivial handlers, documentation, formatting, generated code, or wiring without domain decisions.
 
 If `excluded(t) ∧ ¬explicit(t) ∧ ¬repository_requires(t)`, use proportionate verification. Follow existing tests when they add clear regression value.

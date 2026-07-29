@@ -35,7 +35,7 @@ The feedback loop is the debugging work. Before reading code to build a theory, 
 
 When a clean repro is hard, spend disproportionate effort building the loop. Guessing without a red-capable loop is the failure mode this skill exists to prevent.
 
-## When to Use
+## Usage
 
 Use for ANY technical issue:
 
