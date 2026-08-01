@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
-description: "Apply strict RED-GREEN-REFACTOR to behaviorally significant logic, regression-prone bug fixes, complex refactors, or explicit TDD requests. Do not activate for basic scaffolding, configuration, dependency wiring, boilerplate, documentation, or trivial framework handlers unless the user requests TDD."
-version: 1.3.0
+description: "Apply strict RED-GREEN-REFACTOR only when the target project already uses test suites. Use for behaviorally significant logic, regression-prone bug fixes, complex refactors, or explicit TDD requests."
+version: 1.4.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
 platforms: [linux, macos, windows]
@@ -15,7 +15,9 @@ metadata:
 
 ## Usage
 
-Use strict test-first development when the task has meaningful behavior or regression risk.
+Use strict test-first development only when the target project already uses test suites and the activation rule applies.
+
+Do not add a test suite solely to activate this skill. Use the repository's normal verification workflow when no test suite exists.
 
 Once selected, write one test, watch it fail, then write minimal code to pass.
 
@@ -24,12 +26,15 @@ Once selected, write one test, watch it fail, then write minimal code to pass.
 Use this activation rule:
 
 ```text
-tdd(t) ⇔ explicit(t) ∨ repository_requires(t)
-         ∨ (¬excluded(t) ∧ (regression_fix(t) ∨ meaningful_logic(t) ∨ risky_refactor(t)))
+tdd(t) ⇔ existing_suite(project(t)) ∧ (explicit(t) ∨ repository_requires(t)
+         ∨ (¬excluded(t) ∧ (regression_fix(t) ∨ meaningful_logic(t) ∨ risky_refactor(t))))
 ```
 
+- `existing_suite`: The project has an established test command and maintained test files.
 - `meaningful_logic`: Domain or business logic with meaningful branches or edge cases.
 - `excluded`: Scaffolding, configuration, boilerplate, trivial handlers, documentation, formatting, generated code, or wiring without domain decisions.
+
+If `¬existing_suite(project(t))`, do not activate this skill. Do not add test infrastructure solely to use TDD.
 
 If `excluded(t) ∧ ¬explicit(t) ∧ ¬repository_requires(t)`, use proportionate verification. Follow existing tests when they add clear regression value.
 
@@ -262,7 +267,7 @@ Tests-after are biased by your implementation. You test what you built, not what
 | "Test hard = design unclear" | Listen to the test. Hard to test = hard to use. |
 | "TDD will slow me down" | TDD faster than debugging. Pragmatic = test-first. |
 | "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
-| "Existing code has no tests" | You're improving it. Add tests for the code you touch. |
+| "Project has no test suite" | This skill does not apply. Use the repository's normal verification workflow. |
 
 ## Red Flags — STOP and Start Over
 
@@ -349,9 +354,9 @@ delegate_task(
 
 ### With systematic-debugging
 
-Bug found? Write failing test reproducing it. Follow TDD cycle. The test proves the fix and prevents regression.
+If the activation rule applies, write a failing test that reproduces the bug. Follow the TDD cycle. The test proves the fix and prevents regression.
 
-Never fix bugs without a test.
+If the project has no existing test suite, use the repository's normal verification workflow.
 
 ## Testing Anti-Patterns
 
