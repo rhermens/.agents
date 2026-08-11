@@ -25,12 +25,18 @@ Use this skill when the user asks whether a dependency is available on NixOS/Nix
    - Use `nix search nixpkgs <query> --json` for broader discovery.
    - For current upstream facts or popularity, use web/GitHub search as supporting evidence only.
 
-4. Prefer nixpkgs packages before external flakes.
+4. Prefer upstream fixes before local workarounds.
+   - If a locked package fails, test the latest intended input before creating an overlay or pin.
+   - Use `nix build --override-input <input> <upstream-url> --no-write-lock-file <installable>` for a non-mutating probe.
+   - If upstream fixes the failure, run `nix flake update <input>` and review `flake.lock` before rebuilding.
+   - Create an overlay or package pin only when upstream remains broken or the update causes unacceptable regressions.
+
+5. Prefer nixpkgs packages before external flakes.
    - If a suitable package exists in nixpkgs, recommend that first.
    - If only an external flake exists, explain the trade-off: extra input/lock churn and trust surface versus exact tool support.
    - For optional dependencies, recommend the packaged alternative first unless the feature demonstrably requires the un-packaged tool.
 
-5. Give concrete Home Manager/NixOS snippets.
+6. Give concrete Home Manager/NixOS snippets.
    - For user-level tools: `home.packages = [ pkgs.<pkg> ];`
    - For host/system tools: `environment.systemPackages = with pkgs; [ <pkg> ];`
    - For flake inputs already passed via `extraSpecialArgs = { inherit inputs; };`, use `inputs.<name>.packages.${pkgs.stdenv.hostPlatform.system}.default` from Home Manager modules.
@@ -42,9 +48,9 @@ Use this skill when the user asks whether a dependency is available on NixOS/Nix
   upstreamPkgs.<pkg>
   ```
   Verify package attrs exist with `nix flake show <flake> --json` or `nix eval` before editing call sites.
-- When one package breaks on current nixpkgs but the rest of the system should stay current, pin only that package through a dedicated old-nixpkgs input and a tiny overlay. Preserve `config = prev.config;` when importing the pinned nixpkgs so unfree/package config carries over. See `references/pin-single-package-from-old-nixpkgs.md`.
+- If the latest intended nixpkgs input still breaks one package, pin only that package through a dedicated old-nixpkgs input and a tiny overlay. Preserve `config = prev.config;` when importing the pinned nixpkgs so unfree/package config carries over. See `references/pin-single-package-from-old-nixpkgs.md`.
 
-6. For "what tools/plugins should I add?" audits, inspect the actual toolchain before recommending.
+7. For "what tools/plugins should I add?" audits, inspect the actual toolchain before recommending.
    - Read the user's Nix/Home Manager package declarations, imported modules, symlinked config directories, and relevant app configs such as Neovim `vim.pack.add`, tmux, zsh, git, and `.tool-versions`/mise files.
    - Identify tools the config already expects but Nix does not provide declaratively (for example shell hooks in `.zshrc`, Git LFS filters in git config, Neovim test/debug runners, LSP server commands, formatter/linter binaries). Prioritize these as "missing support for existing workflow" above generic trendy tools.
    - For Neovim plugin recommendations, compare against the existing plugin set and choose complementary class-level additions (formatting orchestration, diagnostics UI, project-wide replace, motion, AI/MCP integration) rather than duplicating capabilities already covered by Snacks, mini.nvim, oil, etc.
@@ -55,7 +61,7 @@ Use this skill when the user asks whether a dependency is available on NixOS/Nix
      ```
    - When recommending shell integrations, prefer Home Manager modules where they exist (`programs.direnv`, `programs.zoxide`, `programs.eza`, `programs.bat`) instead of only adding packages to `home.packages`.
 
-7. Verify when making edits.
+8. Verify when making edits.
    - After editing, run the relevant `nix flake check`, `home-manager switch --flake ...`, or `nixos-rebuild dry-build/switch --flake ...` command only when scope is clear and side effects are acceptable.
    - If canonical verification is not obvious or external tooling requests it, create a focused temporary `hermes-verify-*` script with OS temp-directory APIs (`tempfile.mkstemp`/`mktemp`) rather than hand-writing into system temp paths. Run it against the changed Nix behavior, remove it when possible, and report it explicitly as ad-hoc verification rather than full suite green. For cross-platform guards, a concise probe can import the edited module twice with Linux and Darwin `system` values and assert the guarded attr is absent/present as intended.
    - For local flake eval/build probes, prefer `--no-write-lock-file` unless the requested task is to update the lockfile; this prevents verification from adding incidental `flake.lock` churn.
