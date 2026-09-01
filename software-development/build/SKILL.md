@@ -20,6 +20,24 @@ Before writing code, understand what you are building.
 - **Identify constraints.** Language, framework, existing patterns, performance requirements, deadlines.
 - **Map the domain.** Understand the business concepts before reaching for technical abstractions. Name things after the domain, not the pattern. A `Shipment` is a `Shipment`, not a `DataTransferObject`.
 
+### 1a. Control the Scope
+
+Keep implementation changes within the user's requested contract.
+
+```text
+outside_scope(i) ⇔ pre_existing(i) ∧ ¬required_by_request(i) ∧ ¬caused_by_change(i)
+```
+
+`outside_scope` means the issue existed before the work, is not required, and was not caused by the current change.
+
+- Before fixing a verification issue, determine whether the current change caused it.
+- If an issue is outside scope, do not modify it.
+- If supported, defer the diagnostic with a reason.
+- Report outside-scope issues separately from implementation results.
+- Ask the user before changing any outside-scope issue.
+- If it blocks verification, report the failure and provide scoped evidence.
+- If it creates an immediate safety risk, stop and ask the user before changing it.
+
 ### 2. Design the Architecture
 
 Plan before you build.
@@ -33,7 +51,7 @@ Plan before you build.
 
 ### 3. Build to These Standards
 
-Every line of code must satisfy the following invariants. If any invariant is violated, the system is unsound.
+Every changed line must satisfy the following invariants. If your change violates an invariant, the implementation is unsound.
 
 **Immutability Invariant.** Shared state is never mutated. Use `const`, immutable data structures, and copy-on-write.
 
@@ -93,7 +111,7 @@ Validate the following before shipping. If any guarantee cannot be validated, th
 5. **Security Preservation.** The implementation introduces no vulnerabilities.
    - Check injection points (SQL, NoSQL, command, XSS).
    - Verify authentication boundaries and data exposure surfaces.
-   - If any input is used in a query string, command, or HTML without sanitization/parameterization, fix immediately.
+   - If your change uses input in a query string, command, or HTML without sanitization or parameterization, fix it immediately.
 
 6. **Termination and Resource Safety.** The implementation completes in reasonable time and space; resources are properly acquired and released.
    - Check for infinite loops, unbounded recursion, accidentally quadratic (or worse) complexity, and missing `await`.
