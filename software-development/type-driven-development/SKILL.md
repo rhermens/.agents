@@ -59,45 +59,7 @@ Identify concepts with distinct identity, lifecycle, or meaning.
 
 Completion condition: every value in the slice belongs to a named domain concept or a justified primitive.
 
-### 3. Define Domain Properties
-
-Describe each entity's valid data, variants, invariants, and lifecycle states.
-
-- Use product types for properties that coexist.
-- Use sum types for mutually exclusive states.
-- Replace flags with explicit variants when combinations can conflict.
-- Distinguish values with different units, validation rules, or security meaning.
-- Represent optional data only when absence is valid in that state.
-- Put runtime validation at untrusted boundaries.
-- Return validated domain values after boundary parsing.
-
-Prefer:
-
-```typescript
-type OrderId = string & { readonly __brand: "OrderId" };
-type Money = Readonly<{ currency: Currency; minorUnits: bigint }>;
-
-type Order =
-  | Readonly<{ state: "draft"; id: OrderId; lines: readonly OrderLine[] }>
-  | Readonly<{ state: "submitted"; id: OrderId; lines: NonEmptyArray<OrderLine>; total: Money }>;
-```
-
-Avoid:
-
-```typescript
-type Order = {
-  id: string;
-  submitted: boolean;
-  lines?: OrderLine[];
-  total?: number;
-};
-```
-
-The second form permits contradictory and incomplete states.
-
-Completion condition: invalid combinations are excluded where practical, and remaining invariants are explicit.
-
-### 4. Define Function Signatures
+### 3. Define Function Signatures
 
 Write contracts without implementation logic.
 
