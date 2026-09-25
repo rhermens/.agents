@@ -16,9 +16,7 @@ Build domain logic by making the type system describe valid data and valid opera
 
 Use this skill when:
 
-- the user explicitly requests type-driven development,
 - domain entities or state transitions are central to the work,
-- invalid states can be excluded through types,
 - public contracts need design before implementation.
 
 Do not use it for documentation, configuration, generated code, or untyped languages without a useful static checker.
