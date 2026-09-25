@@ -75,13 +75,10 @@ For each operation, specify:
 Prefer signatures that expose valid transitions:
 
 ```typescript
-type SubmitError =
-  | Readonly<{ kind: "empty-order" }>
-  | Readonly<{ kind: "invalid-price"; lineId: OrderLineId }>;
-
-declare function submitOrder(
+function submitOrder(
   order: DraftOrder,
-): Result<SubmittedOrder, SubmitError>;
+): Result<SubmittedOrder, SubmitError> {
+}
 ```
 
 Avoid weak contracts such as `any`, broad `string`, boolean success flags, unchecked casts, or exceptions for expected domain outcomes.
