@@ -1,6 +1,6 @@
 ---
 name: type-driven-development
-description: Design and implement statically typed domain logic from types outward. Use for explicit type-driven development requests or domain-heavy features where entities, invariants, state transitions, and function contracts should precede implementation. Apply the order: domain entities, domain properties, function signatures, then implementation.
+description: Shape statically typed domain logic so data models, invariants, and contracts guide implementation. Use for explicit type-driven development requests or domain-heavy features where types should reveal valid states, operations, and design constraints.
 license: MIT
 compatibility: Statically typed languages with a compiler or type checker.
 metadata:
@@ -25,52 +25,48 @@ Do not use it for documentation, configuration, generated code, or untyped langu
 
 Do not force domain wrappers onto trivial local values. A new type must express a domain distinction or prevent a real mistake.
 
-## Core Rule
+## Core Principle
 
-Follow this order for each vertical behavior slice:
+Let the domain shape constrain the implementation. Model what values exist, which states are valid, and which transitions are allowed.
 
-```text
-Domain entities → domain properties → function signatures → implementation
-```
+Types and implementation can evolve together. Do not infer the domain model only from code that has already been written.
 
-Do not write implementation logic while an earlier phase remains unresolved.
+If implementation resists the shape, inspect the domain assumption. Do not immediately weaken the contract or bypass the checker.
 
 Types define possible values and operations. Tests still define observable examples and runtime behavior.
 
 ## Workflow
 
-### 1. Select One Domain Slice
+### Choose a Domain Slice
 
-Choose one end-to-end capability. State its input, result, errors, and state changes in domain language.
+Choose one end-to-end capability. State its inputs, results, failures, and state changes in domain language.
 
-Keep the slice small enough to complete all four phases before starting another slice.
+Keep the slice small. Do not model the entire domain upfront.
 
-Do not model the entire domain upfront. Later implementation feedback may change earlier type choices.
+### Shape the Domain
 
-### 2. Define Domain Entities
-
-Identify concepts with distinct identity, lifecycle, or meaning.
+Identify concepts with distinct identity, lifecycle, or meaning. Describe their valid properties, variants, and relationships.
 
 - Use domain names instead of transport or framework names.
-- Separate entities that obey different rules.
-- Give identifiers distinct types when accidental substitution is possible.
+- Separate concepts that obey different rules.
+- Distinguish identifiers or units when accidental substitution is possible.
+- Use explicit variants when flags or optional fields permit contradictory states.
 - Reuse an existing entity when it already owns the concept.
 - Keep persistence and wire formats outside the domain model.
 
-Completion condition: every value in the slice belongs to a named domain concept or a justified primitive.
+Every new type should clarify the domain or prevent a realistic mistake.
 
-### 3. Define Function Signatures
+### Shape Operations
 
-Write contracts without implementation logic.
+Use function signatures to express what operations accept, produce, and reject.
 
-For each operation, specify:
+Consider:
 
-- accepted domain state,
-- returned domain state,
+- accepted domain states,
+- returned domain states,
 - expected failure variants,
-- effect requirements,
-- asynchronous behavior,
-- generic constraints where they preserve information.
+- effect and asynchronous requirements,
+- generic constraints that preserve information.
 
 Prefer signatures that expose valid transitions:
 
@@ -83,39 +79,29 @@ function submitOrder(
 
 Avoid weak contracts such as `any`, broad `string`, boolean success flags, unchecked casts, or exceptions for expected domain outcomes.
 
-If the language requires bodies, use interfaces, declarations, protocols, traits, or compile-failing placeholders. Do not hide behavior in a stub.
+Run the narrowest type-check command while shaping the contract. Confirm valid callers work and invalid calls fail to type-check.
 
-Run the narrowest type-check command. Confirm callers can use the contract and invalid calls fail to type-check.
+### Implement Within the Shape
 
-Completion condition: the type checker accepts the contract surface without weakening it.
-
-### 5. Add Behavioral Examples
-
-If the project has tests, write focused tests against the typed contract before implementation.
-
-When `test-driven-development` also applies, preserve its RED-GREEN-REFACTOR cycle. The type phases precede RED:
-
-```text
-entities → properties → signatures → failing test → implementation → refactor
-```
-
-Do not treat successful type-checking as proof of runtime behavior.
-
-### 6. Implement Last
-
-Write the smallest implementation that satisfies the signatures and behavioral examples.
+Let the established shapes guide control flow and data transformations.
 
 - Exhaustively handle each domain variant.
 - Keep casts and unchecked assertions out of domain logic.
 - Keep I/O at explicit boundaries.
 - Preserve information carried by input types.
-- Do not widen return types to make implementation easier.
+- Do not widen types only to make implementation easier.
 
-If implementation pressure exposes a bad contract, return to the relevant type phase. Change the type deliberately, then update callers and tests.
+Implementation can reveal missing states or incorrect assumptions. Refine the types deliberately, then update callers and tests.
 
-Completion condition: implementation type-checks without contract weakening and satisfies the required behavior.
+### Verify Behavior
 
-### 7. Refine the Slice
+If the project has tests, add focused behavioral examples against the typed contract.
+
+When `test-driven-development` also applies, preserve its RED-GREEN-REFACTOR cycle. Type design shapes the API exercised by each test.
+
+Do not treat successful type-checking as proof of runtime behavior.
+
+### Refine the Model
 
 After verification:
 
@@ -125,7 +111,7 @@ After verification:
 - extract shared constructors or parsers,
 - keep exhaustive checks intact.
 
-Then repeat the workflow for the next domain slice.
+Repeat with the next domain slice.
 
 ## Boundary Rules
 
@@ -157,7 +143,7 @@ If a type adds ceremony without safety or clarity, remove it.
 
 ## Anti-Patterns
 
-- Writing implementation first and annotating it afterward.
+- Treating types as annotations for an implementation that already determined the design.
 - Designing all entities before selecting a vertical slice.
 - Encoding every domain concept as `string`, `number`, or `boolean`.
 - Adding optional properties to merge incompatible lifecycle states.
@@ -173,7 +159,7 @@ Before completion:
 
 - [ ] Domain entities use domain names.
 - [ ] Domain properties express valid variants and invariants.
-- [ ] Function signatures preceded implementation.
+- [ ] Domain shapes and function contracts meaningfully constrain implementation.
 - [ ] Invalid state transitions fail to type-check where practical.
 - [ ] Untrusted inputs pass through runtime validation.
 - [ ] Expected failures have explicit representations.
