@@ -1,7 +1,7 @@
 {
-  description = "Roy's agent skills and configuration";
+  description = "Agent skills and configuration";
 
-  outputs = self: {
+  outputs = { self }: {
     homeManagerModules.default = {
       home.file.".agents".source = self.outPath;
     };
