@@ -2,10 +2,10 @@
 name: watch-ticket
 description: Watch a GitHub PR with linked Jira ticket context, assess new comments against current-head evidence, and investigate CI/CD failures. Use when asked to watch a ticket's PR or monitor a PR against its ticket requirements. Not for Jira-only status monitoring or a one-time review.
 license: MIT
-compatibility: Requires authenticated GitHub CLI (`gh`) and the pr-watch skill. Linked Jira context requires Atlassian CLI (`acli`) and jira-acli. Monitoring lasts only during the active agent session.
+compatibility: Requires github-stream, authenticated GitHub CLI (`gh`), the pr-watch skill, and a local checkout that selects the target PR. Linked Jira context requires Atlassian CLI (`acli`) and jira-acli. Monitoring lasts only during the active agent session.
 metadata:
   author: Roy Hermens
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Watch Ticket
