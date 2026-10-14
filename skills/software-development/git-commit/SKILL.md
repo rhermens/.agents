@@ -12,7 +12,7 @@ Commit staged work with a Conventional Commits message. Keep one conventional co
 Use this format:
 
 ```text
-<type>[optional scope][!]: <description>
+<type>[optional scope][!]: [TICKET-123: ]<description>
 
 [optional body]
 
@@ -23,16 +23,17 @@ Apply these rules:
 
 - Use one of these types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
 - Use a lowercase noun for the scope, such as `feat(auth): ...`.
-- Write the description in the imperative mood, lowercase, without a final period.
-- Keep the header at 72 characters or fewer.
+- If the branch name contains a Jira ticket key such as `DR-1234`, put it after the colon: `fix(auth): DR-1234: handle expired tokens`.
+- If the branch name has no ticket key, omit the ticket segment.
+- Write the description in the imperative mood, lowercase, without a final period. Keep the ticket key uppercase.
+- Keep the header, including the ticket key, at 72 characters or fewer.
 - Explain why the change exists in the body, not how.
 - If the change breaks an API, add `!` after the type or scope and a `BREAKING CHANGE: <details>` footer.
-- If the branch name contains an issue key such as `ABC-123`, add a `Refs: ABC-123` footer.
 
 A header is conventional when it matches this pattern:
 
 ```text
-^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: .+
+^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: ([A-Z][A-Z0-9]+-[0-9]+: )?.+
 ```
 
 ## Workflow
