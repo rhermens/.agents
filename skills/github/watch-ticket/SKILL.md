@@ -2,10 +2,10 @@
 name: watch-ticket
 description: Watch a GitHub PR with linked Jira ticket context, assess new comments against current-head evidence, and investigate CI/CD failures. Use when asked to watch a ticket's PR or monitor a PR against its ticket requirements. Not for Jira-only status monitoring or a one-time review.
 license: MIT
-compatibility: Requires github-stream, authenticated GitHub CLI (`gh`), the pr-watch skill, and a local checkout that selects the target PR. Linked Jira context requires Atlassian CLI (`acli`) and jira-acli. Monitoring lasts only during the active agent session.
+compatibility: Requires github-stream, authenticated GitHub CLI (`gh`), the pr-watch skill, and a local checkout whose `origin` is the PR's base repository. Linked Jira context requires Atlassian CLI (`acli`) and jira-acli. Monitoring lasts only during the active agent session.
 metadata:
   author: Roy Hermens
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # Watch Ticket
@@ -16,7 +16,7 @@ Accept a PR URL or number. If no target is supplied, use the PR associated with 
 
 ## Required skills
 
-- [pr-watch](../pr-watch/SKILL.md): active-session polling, comment collection, severity ordering, and CI/CD investigation.
+- [pr-watch](../pr-watch/SKILL.md): active-session streaming, comment collection, severity ordering, and CI/CD investigation.
 - [jira-acli](../../atlassian/jira-acli/SKILL.md): read linked Jira work items when a ticket key is available.
 - [pr-review-comment-assessment](../pr-review-comment-assessment/SKILL.md): detailed comment assessment when needed.
 
@@ -30,7 +30,7 @@ Read these skills when their workflow applies. If a required skill is unavailabl
 4. If one key is present, load `jira-acli` and fetch the work item with `acli jira workitem view KEY`.
 5. Capture its summary, description, acceptance criteria, and status when available.
 6. If the key is ambiguous or Jira is unavailable, report the limitation without delaying the PR watch.
-7. Load `pr-watch` and start its active-session polling workflow immediately.
+7. Load `pr-watch` and start its active-session streaming workflow immediately.
 8. Before each update, apply the evidence checks below to its substantive claims.
 9. Report new comments in severity order and failed CI/CD checks with supporting evidence.
 10. Continue after each update until the user stops the watch, the PR closes, or the session ends.
