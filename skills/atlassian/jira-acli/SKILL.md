@@ -1,11 +1,13 @@
 ---
 name: jira-acli
-description: Work with Jira Cloud from the terminal using Atlassian CLI (`acli`) instead of the Jira MCP server. Use for Jira issues/work items, projects, boards, sprints, fields, filters, dashboards, JQL searches, and safe Jira automation.
+description: Work with Jira Cloud from the terminal using Atlassian CLI (`acli`) instead of the Jira MCP server. Use for JQL searches, Jira writes, projects, boards, sprints, fields, filters, dashboards, and data jira-stream lacks. To read one ticket by key, use jira-stream instead.
 ---
 
 # Jira ACLI Skill
 
 Use this skill for Jira tasks. Prefer Atlassian's official CLI, `acli`, over MCP.
+
+To read or watch one work item by key, use [jira-stream](../jira-stream/SKILL.md) first. Use `acli` for that ticket only to fill data `jira-stream fetch` lacks, such as field names or extra comments.
 
 ## Requirements
 
@@ -75,8 +77,10 @@ key in (ABC-123, ABC-456)
 
 ### View one issue / work item
 
+Prefer `jira-stream fetch --ticket ABC-123`. Use `acli` only for fields missing from that output:
+
 ```bash
-acli jira workitem view ABC-123
+acli jira workitem view ABC-123 --fields comment --json
 ```
 
 ### List projects
@@ -192,7 +196,7 @@ Use these CLI equivalents instead of Jira MCP tools:
 
 - auth/connect: `acli jira auth status`, `acli jira auth login`
 - list/search issues: `acli jira workitem search --jql '...'`
-- view issue: `acli jira workitem view KEY`
+- view issue: `jira-stream fetch --ticket KEY`; `acli jira workitem view KEY --fields FIELD --json` for missing fields
 - create issue: `acli jira workitem create ...`
 - projects: `acli jira project list/view`
 - boards: `acli jira board list`
