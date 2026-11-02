@@ -1,11 +1,10 @@
 ---
 name: obsidian-design-notes
 description: "Author design, architecture, and project documentation notes in the Obsidian vault. Covers format conventions, mermaid diagram usage, multi-note linking, and git-friendly data file patterns."
-platforms: [linux, macos, windows]
 metadata:
-  hermes:
-    tags: [obsidian, design, architecture, documentation, mermaid]
-    related_skills: [obsidian, knowledge-base-maintenance]
+  platforms: "linux, macos, windows"
+  hermes.tags: "obsidian, design, architecture, documentation, mermaid"
+  hermes.related_skills: "obsidian, knowledge-base-maintenance"
 ---
 
 # Obsidian Design Notes

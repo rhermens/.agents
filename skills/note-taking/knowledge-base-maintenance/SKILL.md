@@ -55,8 +55,9 @@ Use this skill when the user asks to scan notes, clean up an Obsidian vault, fin
 
 ## Cron-job notes
 
-- Cron jobs may run without an interactive approval path; prefer `terminal` or file tools over `execute_code` if `execute_code` is blocked in cron mode.
-- If `skills.external_dirs` creates a skill-name collision, `skill_view` may fail as ambiguous. Diagnose by reading the concrete `SKILL.md` path from the collision message or by removing the stale duplicate; do not loop on the same ambiguous skill name.
+- If a cron operation requires interactive approval, stop and report the blocker.
+- If skill loading reports a name collision, read the intended `SKILL.md` by its concrete path.
+- Report duplicate skill roots for cleanup; do not remove a duplicate without authorization.
 - After making edits in a Git-backed vault, verify with `git status`, confirm expected deletions are absent, confirm modified targets exist, and include the root diff note path in the final report.
 - In vaults with auto-backup/auto-commit hooks, `git status` may become clean while your changes were committed during the run. If that happens, inspect recent commits (`git log --oneline -6`, `git show --name-status <commit>`) and build the root diff note from the relevant commit range rather than from the now-empty working tree.
 - When embedding the diff in the root report note, exclude the report note itself from the embedded unified diff to avoid recursive/self-referential diffs. If unrelated non-markdown files changed concurrently, scope the embedded cleanup diff to markdown pathspecs and mention only the markdown cleanup in the note.

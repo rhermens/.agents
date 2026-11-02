@@ -6,56 +6,52 @@ platforms: [linux, macos, windows]
 
 # Obsidian Vault
 
-Use this skill for filesystem-first Obsidian vault work: reading notes, listing notes, searching note files, creating notes, appending content, and adding wikilinks.
+Use this skill for filesystem-first vault work: reading, listing, searching, creating, appending, editing, and adding wikilinks.
 
 ## Vault path
 
-Use a known or resolved vault path before calling file tools.
+Resolve the vault path before file operations.
+Use `OBSIDIAN_VAULT_PATH` when set. Otherwise, check `~/Documents/Obsidian Vault`.
+If neither resolves to an existing vault, ask for the path before creating or editing notes.
 
-The documented vault-path convention is the `OBSIDIAN_VAULT_PATH` environment variable, for example from `${HERMES_HOME:-~/.hermes}/.env`. If it is unset, use `~/Documents/Obsidian Vault`.
-
-File tools do not expand shell variables. Do not pass paths containing `$OBSIDIAN_VAULT_PATH` to `read_file`, `write_file`, `patch`, or `search_files`; resolve the vault path first and pass a concrete absolute path. Vault paths may contain spaces, which is another reason to prefer file tools over shell commands.
-
-If the vault path is unknown, `terminal` is acceptable for resolving `OBSIDIAN_VAULT_PATH` or checking whether the fallback path exists. Once the path is known, switch back to file tools.
+Resolve environment variables and `~` before passing absolute paths to file tools.
+Quote vault paths in shell commands.
 
 ## Read a note
 
-Use `read_file` with the resolved absolute path to the note. Prefer this over `cat` because it provides line numbers and pagination.
+Use the available file-reading tool with the note's absolute path.
+Prefer line numbers and pagination when available.
 
 ## List notes
 
-Use `search_files` with `target: "files"` and the resolved vault path. Prefer this over `find` or `ls`.
-
-- To list all markdown notes, use `pattern: "*.md"` under the vault path.
-- To list a subfolder, search under that subfolder's absolute path.
+List notes with file search or shell commands.
+Restrict the search to the resolved vault or requested subfolder.
+For example, `find "/absolute/vault/path" -type f -name '*.md'` lists Markdown notes.
 
 ## Search
 
-Use `search_files` for both filename and content searches. Prefer this over `grep`, `find`, or `ls`.
-
-- For filenames, use `search_files` with `target: "files"` and a filename `pattern`.
-- For note contents, use `search_files` with `target: "content"`, the content regex as `pattern`, and `file_glob: "*.md"` when you want to restrict matches to markdown notes.
+Use available search tools for filenames and note content.
+Restrict content searches to Markdown when appropriate.
+With ripgrep available, `rg -n -g '*.md' 'pattern' "/absolute/vault/path"` searches note content.
 
 ## Create a note
 
-Use `write_file` with the resolved absolute path and the full markdown content. Prefer this over shell heredocs or `echo` because it avoids shell quoting issues and returns structured results.
+Use the available file-writing tool with the absolute path and full Markdown content.
+Before writing, check whether the target exists. Do not replace an existing note without authorization.
 
 ## Append to a note
 
-Prefer a native file-tool workflow when it is not awkward:
-
-- Read the target note with `read_file`.
-- Use `patch` for an anchored append when there is stable context, such as adding a section after an existing heading or appending before a known trailing block.
-- Use `write_file` when rewriting the whole note is clearer than constructing a fragile patch.
-
-For an anchored append with `patch`, replace the anchor with the anchor plus the new content.
-
-For a simple append with no stable context, `terminal` is acceptable if it is the clearest safe option.
+1. Read the target note.
+2. If stable context exists, use the targeted-editing tool to insert content at that anchor.
+3. If no stable anchor exists, use a permitted append operation or a read-then-write workflow.
+4. Re-read the changed section to verify existing content remains intact.
 
 ## Targeted edits
 
-Use `patch` for focused note changes when the current content gives you stable context. Prefer this over shell text rewriting.
+Read the current content before editing.
+Use the targeted-editing tool with unique surrounding context.
+Check the resulting content or diff for unintended changes.
 
 ## Wikilinks
 
-Obsidian links notes with `[[Note Name]]` syntax. When creating notes, use these to link related content.
+Obsidian links notes with `[[Note Name]]` syntax. When creating notes, link related content with wikilinks.

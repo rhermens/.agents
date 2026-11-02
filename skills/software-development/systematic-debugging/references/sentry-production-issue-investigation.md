@@ -17,7 +17,7 @@ Use this when a Jira bug references linked/commented Sentry issues or when produ
    - release SHA(s), firstSeen/lastSeen, count
    - stack frames mapped back to source files
    - whether events changed release after a hotfix
-6. Trace the Sentry stack frame to source with `search_files`/`read_file`, then trace upstream event/saga/command paths before proposing a fix.
+6. Trace the Sentry stack frame with available code-search and file-reading tools. Trace upstream event/saga/command paths before proposing a fix.
 7. For generic Axios issues with no in-app frames, compare individual event breadcrumbs before assigning one root cause. Sentry may group unrelated outbound HTTP failures together when the stack is only Axios/Sentry/node internals.
 
 ## Related references

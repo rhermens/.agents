@@ -71,12 +71,8 @@ When stuck in a cron/background run with a broken PATH:
    EOF
    ```
 
-2. **Prefer Python-backed tools** over shell-backed ones:
-   - `read_file` instead of `cat`/`head`/`tail`
-   - `patch` instead of `sed`/`awk`
-   - `write_file` instead of `echo`/heredoc
-   - `search_files` may also be broken if it shells out to `head` — use
-     `python3` with `os.walk` + `re` for content searches instead.
+2. **Use file-reading and editing tools** that work without the missing shell utilities.
+   If search tools require missing utilities, use `python3` with `os.walk` and `re`.
 
 3. **Report the PATH issue** in the final response so the user can fix the
    environment permanently.
@@ -169,9 +165,9 @@ pytest. Install it into `venv/` if needed:
 ## Pitfalls
 
 - Do NOT assume `/bin/ls` or `/usr/bin/find` exist on NixOS — they don't.
-- Do NOT assume that because `python3` works, other commands will too —
-  Python is in the Hermes venv, not the system bin dir.
-- `search_files` and `read_file` may shell out to `head` internally — if
+- Do NOT assume that because `python3` works, other commands will too.
+  Python may come from the agent's own environment rather than the system bin dir.
+- In Hermes, `search_files` and `read_file` may shell out to `head` internally — if
   `head` is not on PATH, these tools break silently (returning error strings
   instead of results).
 - The Hermes TUI session works because it inherits the login shell's PATH;
@@ -184,11 +180,5 @@ pytest. Install it into `venv/` if needed:
 - A broken PATH compounds with tool-call budget limits: each failed
   `ls`/`find`/`head` costs a tool call, and the agent may spend 4–7 calls
   diagnosing the PATH issue before falling back to `python3`. On a 50-call
-  budget, this leaves little room for the actual task. Always apply the
-  permanent fix (`shell_init_files` config) rather than relying on
-  per-run workarounds.
-- When diagnosing a cron job that "exhausted its tool-call budget," use
-  `session_search` to find the cron session transcript and look for
-  `command not found` errors in the tool call results — the budget
-  exhaustion may be a symptom of the PATH issue, not a prompt or model
-  problem.
+  budget, this leaves little room for the actual task.
+  Apply a durable fix for the actual launcher rather than relying on per-run workarounds.

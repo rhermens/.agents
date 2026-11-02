@@ -1,14 +1,13 @@
 ---
 name: sentry-cli
 description: Use when installing, configuring, or operating Sentry CLI for releases, deploys, commits, source maps, debug files, events, logs, or CI automation. Provides exact command patterns, authentication setup, verification checks, and common pitfalls for sentry-cli usage.
-version: 1.0.0
-author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
 metadata:
-  hermes:
-    tags: [sentry, sentry-cli, releases, sourcemaps, ci, deploys, observability]
-    related_skills: [github-cli, github-pr-workflow, build]
+  version: "1.0.0"
+  author: "Hermes Agent"
+  platforms: "linux, macos, windows"
+  hermes.tags: "sentry, sentry-cli, releases, sourcemaps, ci, deploys, observability"
+  hermes.related_skills: "github-cli, github-pr-workflow, build"
 ---
 
 # Sentry CLI Usage

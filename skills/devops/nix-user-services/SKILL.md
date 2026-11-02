@@ -1,14 +1,13 @@
 ---
 name: nix-user-services
 description: "Define and verify Home Manager user services."
-version: 1.0.0
-author: Hermes Agent
 license: MIT
-platforms: [linux, macos]
 metadata:
-  hermes:
-    tags: [nix, home-manager, systemd, services]
-    category: devops
+  version: "1.0.0"
+  author: "Hermes Agent"
+  platforms: "linux, macos"
+  hermes.tags: "nix, home-manager, systemd, services"
+  hermes.category: "devops"
 ---
 
 # Nix User Services Skill
@@ -25,7 +24,7 @@ Define persistent per-user services through Home Manager, with systemd on Linux 
 
 - The target repository is a Nix flake with a Home Manager configuration.
 - Inspect the module that imports the service and the application package or wrapper before choosing `ExecStart`.
-- Use `read_file`, `search_files`, and `terminal` to establish the existing Nix style and the actual executable path.
+- Use available file-reading, search, and shell execution tools to establish the existing Nix style and actual executable path.
 
 ## How to Run
 
