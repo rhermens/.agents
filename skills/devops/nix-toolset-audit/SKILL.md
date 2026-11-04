@@ -1,13 +1,12 @@
 ---
 name: nix-toolset-audit
 description: Use when auditing the user's Nix/Home Manager/dotfiles setup to recommend useful new developer tools, Neovim plugins, LSP/formatter/debugger packages, shell utilities, or AI/MCP utilities without immediately editing the config.
-version: 1.0.0
-author: Hermes Agent
 license: MIT
 metadata:
-  hermes:
-    tags: [nix, home-manager, dotfiles, neovim, developer-tools, cli-tools, recommendations]
-    related_skills: [nix-dependency-management]
+  version: "1.0.0"
+  author: "Hermes Agent"
+  hermes.tags: "nix, home-manager, dotfiles, neovim, developer-tools, cli-tools, recommendations"
+  hermes.related_skills: "nix-dependency-management"
 ---
 
 # Nix Toolset Audit
@@ -33,23 +32,17 @@ Do not use this as an implementation workflow unless the user explicitly asks to
    - Completion criterion: package availability and flake-edit advice follows the user's Nix conventions.
 
 2. **Discover the config surface.**
-   - Find Nix files:
-     ```text
-     search_files(pattern="*.nix", target="files", path=".", limit=200)
-     ```
-   - Search for package and program declarations:
-     ```text
-     search_files(pattern="home\\.packages|environment\\.systemPackages|programs\\.|services\\.|inputs\\.", file_glob="*.nix", path=".", context=2, limit=150)
+   - Find Nix files and package/program declarations. For example:
+     ```bash
+     rg --files --hidden -g '*.nix' -g '!.git'
+     rg -n -g '*.nix' 'home\.packages|environment\.systemPackages|programs\.|services\.|inputs\.' .
      ```
    - Read the important modules, usually `flake.nix`, `nix/home.nix`, `nix/development.nix`, `nix/ai.nix`, and host modules.
    - Completion criterion: you know the host systems, imported modules, current package sets, enabled programs/services, and any third-party flake inputs.
 
 3. **Inventory editor and terminal config.**
-   - List and read Neovim files:
-     ```text
-     search_files(pattern="*", target="files", path="nvim", limit=200)
-     read_file(path="nvim/.config/nvim/lua/config/pack.lua")
-     ```
+   - List Neovim files, for example with `find nvim -type f`.
+   - Read `nvim/.config/nvim/lua/config/pack.lua` when the file exists.
    - Search plugin config for LSP, DAP, testing, picker, formatter, lint, notes, AI, and git integrations.
    - Read shell/tmux/git config if present: `.zshrc`, `.zsh_plugins.txt`, `tmux.conf`, git config, `.tool-versions`.
    - Completion criterion: every recommendation can be tied to a present workflow, a missing declared dependency, or a clear gap.

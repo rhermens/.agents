@@ -1,14 +1,13 @@
 ---
 name: systematic-debugging
 description: "4-phase root cause debugging: understand bugs before fixing."
-version: 1.2.0
-author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
-platforms: [linux, macos, windows]
 metadata:
-  hermes:
-    tags: [debugging, troubleshooting, problem-solving, root-cause, investigation]
-    related_skills: [test-driven-development, plan, subagent-driven-development]
+  version: "1.2.0"
+  author: "Hermes Agent (adapted from obra/superpowers)"
+  platforms: "linux, macos, windows"
+  hermes.tags: "debugging, troubleshooting, problem-solving, root-cause, investigation"
+  hermes.related_skills: "test-driven-development, plan, subagent-driven-development"
 ---
 
 # Systematic Debugging
@@ -80,7 +79,7 @@ enter(phase n + 1) ⇒ complete(phase n)
 - Note line numbers, file paths, error codes
 - For production issues linked from Jira/Sentry, pull the full Sentry issue + latest/listed event payloads, not just the summary table. Capture endpoint, request payload, release SHA, first/last seen, and stack frames before tracing source. See `references/sentry-production-issue-investigation.md`.
 
-**Action:** Use `read_file` on the relevant source files. Use `search_files` to find the error string in the codebase.
+**Action:** Read the relevant source files. Search the codebase for the error string.
 
 ### 2. Build a Tight Feedback Loop
 
@@ -93,7 +92,7 @@ enter(phase n + 1) ⇒ complete(phase n)
 
 **Ways to construct a loop — try in roughly this order:**
 
-1. **Failing test** at the seam that reaches the bug: unit, integration, or end-to-end.
+1. **Failing test** in an existing suite at the seam that reaches the bug: unit, integration, or end-to-end.
 2. **HTTP script / curl** against a running dev server.
 3. **CLI invocation** with fixture input, diffing stdout/stderr against expected output.
 4. **Headless browser script** (Playwright/Puppeteer) asserting on DOM, console, or network.
@@ -114,7 +113,7 @@ enter(phase n + 1) ⇒ complete(phase n)
 
 For non-deterministic bugs, the immediate goal is a higher reproduction rate, not perfection. Run the trigger 100x, parallelize, add stress, narrow timing windows, or inject sleeps. A 50% flake is debuggable; a 1% flake usually is not.
 
-**Action:** Use the `terminal` tool to run the tight loop:
+**Action:** Run the tight loop with the project's verification commands. Examples:
 
 ```bash
 # Run a specific failing test
@@ -172,15 +171,7 @@ THEN investigate that specific component.
 - Keep tracing upstream until you find the source
 - Fix at the source, not at the symptom
 
-**Action:** Use `search_files` to trace references:
-
-```python
-# Find where the function is called
-search_files("function_name(", path="src/", file_glob="*.py")
-
-# Find where the variable is set
-search_files("variable_name\\s*=", path="src/", file_glob="*.py")
-```
+**Action:** Trace callers and assignments with code navigation or repository-scoped search.
 
 ### Phase 1 Completion Checklist
 
@@ -212,11 +203,7 @@ Done when removing any remaining element makes the loop go green. A minimal repr
 - Locate similar working code in the same codebase
 - What works that's similar to what's broken?
 
-**Action:** Use `search_files` to find comparable patterns:
-
-```python
-search_files("similar_pattern", path="src/", file_glob="*.py")
-```
+**Action:** Find comparable implementations in the same repository.
 
 ### 2. Compare Against References
 
@@ -278,12 +265,11 @@ If the user is present, show the ranked list before testing. They may have domai
 
 **Fix the root cause, not the symptom:**
 
-### 1. Create Failing Test Case
+### 1. Confirm Failing Verification
 
-- Simplest possible reproduction
-- Automated test if possible
-- MUST have before fixing
-- Use the `test-driven-development` skill
+- Before fixing, run the smallest reproduction command that demonstrates the exact symptom.
+- If `test-driven-development`'s activation rule applies, add a regression test in the existing suite and verify RED.
+- Otherwise, retain the reproduction command and use the repository's normal verification workflow.
 
 ### 2. Implement Single Fix
 
@@ -294,11 +280,13 @@ If the user is present, show the ranked list before testing. They may have domai
 
 ### 3. Verify Fix
 
-```bash
-# Run the specific regression test
-pytest tests/test_module.py::test_regression -v
+Rerun the reproduction command and the repository's verification workflow, including applicable regression tests.
+Report the exact commands and observed results.
 
-# Run full suite — no regressions
+For a project with an existing pytest suite:
+
+```bash
+pytest tests/test_module.py::test_regression -v
 pytest tests/ -q
 ```
 
@@ -338,7 +326,7 @@ If you catch yourself thinking:
 - "Quick fix for now, investigate later"
 - "Just try changing X and see if it works"
 - "Add multiple changes, run tests"
-- "Skip the test, I'll manually verify"
+- "Skip the failing verification command; I'll guess whether the fix worked"
 - "It's probably X, let me fix that"
 - "I don't fully understand but this might work"
 - "Pattern says X but I'll adapt it differently"
@@ -371,49 +359,12 @@ If you catch yourself thinking:
 | **1. Root Cause** | Read errors, reproduce, check changes, gather evidence, trace data flow | Understand WHAT and WHY |
 | **2. Pattern** | Find working examples, compare, identify differences | Know what's different |
 | **3. Hypothesis** | Form theory, test minimally, one variable at a time | Confirmed or new hypothesis |
-| **4. Implementation** | Create regression test, fix root cause, verify | Bug resolved, all tests pass |
+| **4. Implementation** | Confirm failing verification, fix root cause, verify | Reproduction passes; applicable repository checks pass |
 
-## Hermes Agent Integration
+## Delegation
 
-### Investigation Tools
-
-Use these Hermes tools during Phase 1:
-
-- **`search_files`** — Find error strings, trace function calls, locate patterns
-- **`read_file`** — Read source code with line numbers for precise analysis
-- **`terminal`** — Run tests, check git history, reproduce bugs
-- **`web_search`/`web_extract`** — Research error messages, library docs
-
-### With delegate_task
-
-For complex multi-component debugging, dispatch investigation subagents:
-
-```python
-delegate_task(
-    goal="Investigate why [specific test/behavior] fails",
-    context="""
-    Follow systematic-debugging skill:
-    1. Read the error message carefully
-    2. Reproduce the issue
-    3. Trace the data flow to find root cause
-    4. Report findings — do NOT fix yet
-
-    Error: [paste full error]
-    File: [path to failing code]
-    Test command: [exact command]
-    """,
-    toolsets=['terminal', 'file']
-)
-```
-
-### With test-driven-development
-
-When fixing bugs:
-
-1. Write a test that reproduces the bug (RED)
-2. Debug systematically to find root cause
-3. Fix the root cause (GREEN)
-4. The test proves the fix and prevents regression
+For multi-component investigations, delegate independent components when supported.
+Include the error, source locations, reproduction command, and request for evidence without fixes.
 
 ## Real-World Impact
 

@@ -27,16 +27,14 @@ Never delete, merge, publish, or relocate skills without authorization for that 
 
 Start curation only when the primary task is complete, stopped, or explicitly handed off.
 
-If active work remains, defer curation. Do not interrupt implementation, debugging, or verification.
-
-Use only available session evidence. Do not invent missing events or claim access to unavailable session history.
+Use only available session evidence.
 
 ## Reflection workflow
 
 1. **Summarize the outcome.** Record the request, result, verification state, and unresolved blockers.
 2. **Extract evidence.** Find user corrections, repeated friction, failed approaches, safeguards, and successful non-obvious workflows.
-3. **Form candidates.** Convert each observation into one transferable behavior change. Remove project, framework, tool, and job-specific terms.
-4. **Test formalization.** Formalize declarative rules only when this reduces tokens and valid interpretations.
+3. **Form candidates.** Convert each observation into one transferable behavior change.
+4. **Test formalization.** Apply `skill-authoring`'s formalization rule.
 5. **Classify each candidate.** Choose a broadly applicable existing skill, a new skill, or no durable change.
 6. **Inspect nearby skills.** Read the full text of likely destination skills and overlapping descriptions.
 7. **Evaluate each candidate.** Apply the acceptance rules below and reject weak candidates.
@@ -69,15 +67,11 @@ accept(c) ⇔ evidenced(c) ∧ improves_behavior(c) ∧ recurring(c) ∧ stable(
             ∧ sanitized(c) ∧ trigger_preserving(c)
 ```
 
-- `domain_neutral`: Applies across projects, frameworks, languages, and non-programming work.
+- `domain_neutral`: Applies across projects, frameworks, languages, and non-programming work, without session-specific project, tool, role, or job terms.
 - `sanitized`: Contains no secrets, private data, or incidental identifiers.
 - `trigger_preserving`: Does not make a broad skill trigger less accurately.
 
 Reject a candidate when any conjunct is false.
-
-## Formalization review
-
-Apply `skill-authoring`'s formalization rule while forming candidates. Keep a formula only when it preserves every condition and reduces tokens and ambiguity.
 
 ## Choose the destination
 
@@ -97,8 +91,6 @@ If skills overlap, recommend consolidation only when their trigger boundaries or
 Before editing, activate or read `skill-authoring` and follow its authoring, safety, and validation workflow.
 
 Make the smallest change that alters future behavior. Preserve valid frontmatter, terminology, structure, and portability.
-
-Keep session-specific evidence out of the skill. Write the generalized rule that the evidence supports.
 
 Do not modify product code, project configuration, or unrelated documentation during curation.
 
@@ -121,11 +113,7 @@ For each accepted candidate, report:
 - expected benefit,
 - confidence as high, medium, or low.
 
-Write each recommendation as domain-neutral behavior that applies to programming and non-programming work.
-
-Do not name the session's project, framework, language, tool, role, or job in the proposed action.
-
-Do not produce a patch unless the user requests one. Limit the report to the highest-value candidates.
+Limit the report to the highest-value candidates.
 
 If no candidate passes the acceptance rules, report: `No skill changes recommended.`
 

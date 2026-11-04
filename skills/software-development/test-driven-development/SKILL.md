@@ -1,14 +1,13 @@
 ---
 name: test-driven-development
 description: "Apply strict RED-GREEN-REFACTOR only when the target project already uses test suites. Use for behaviorally significant logic, regression-prone bug fixes, complex refactors, or explicit TDD requests."
-version: 1.4.0
-author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
-platforms: [linux, macos, windows]
 metadata:
-  hermes:
-    tags: [testing, tdd, development, quality, red-green-refactor]
-    related_skills: [systematic-debugging, plan, subagent-driven-development]
+  version: "1.4.0"
+  author: "Hermes Agent (adapted from obra/superpowers)"
+  platforms: "linux, macos, windows"
+  hermes.tags: "testing, tdd, development, quality, red-green-refactor"
+  hermes.related_skills: "systematic-debugging, plan, subagent-driven-development"
 ---
 
 # Test-Driven Development (TDD)
@@ -100,7 +99,7 @@ Vague name, tests mock not real code.
 **MANDATORY. Never skip.**
 
 ```bash
-# Use terminal tool to run the specific test
+# Use the available shell execution tool to run the specific test
 pytest tests/test_feature.py::test_specific_behavior -v
 ```
 
@@ -312,45 +311,12 @@ Can't check all boxes? You skipped TDD. Start over.
 | Must mock everything | Code too coupled. Use dependency injection. |
 | Test setup huge | Extract helpers. Still complex? Simplify the design. |
 
-## Hermes Agent Integration
+## Related Workflows
 
-### Running Tests
+### Delegated Implementation
 
-Use the `terminal` tool to run tests at each step:
-
-```python
-# RED — verify failure
-terminal("pytest tests/test_feature.py::test_name -v")
-
-# GREEN — verify pass
-terminal("pytest tests/test_feature.py::test_name -v")
-
-# Full suite — verify no regressions
-terminal("pytest tests/ -q")
-```
-
-### With delegate_task
-
-When dispatching subagents for implementation, enforce TDD in the goal:
-
-```python
-delegate_task(
-    goal="Implement [feature] using strict TDD",
-    context="""
-    Follow test-driven-development skill:
-    1. Write failing test FIRST
-    2. Run test to verify it fails
-    3. Write minimal code to pass
-    4. Run test to verify it passes
-    5. Refactor if needed
-    6. Commit
-
-    Project test command: pytest tests/ -q
-    Project structure: [describe relevant files]
-    """,
-    toolsets=['terminal', 'file']
-)
-```
+For delegated implementation, provide the activation rule, project test command, relevant files, and RED-GREEN-REFACTOR sequence.
+Require observed test commands and results in the handoff.
 
 ### With systematic-debugging
 

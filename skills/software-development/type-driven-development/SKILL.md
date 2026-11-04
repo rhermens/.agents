@@ -21,15 +21,12 @@ Use this skill when:
 
 Do not use it for documentation, configuration, generated code, or untyped languages without a useful static checker.
 
-Do not force domain wrappers onto trivial local values. A new type must express a domain distinction or prevent a real mistake.
-
 ## Core Principle
 
 Let the domain shape constrain the implementation. Model what values exist, which states are valid, and which transitions are allowed.
 
-Types and implementation can evolve together. Do not infer the domain model only from code that has already been written.
-
-If implementation resists the shape, inspect the domain assumption. Do not immediately weaken the contract or bypass the checker.
+Evolve types and implementation together as the domain becomes clearer.
+If implementation resists the shape, inspect the domain assumption.
 
 Types define possible values and operations. Tests still define observable examples and runtime behavior.
 
@@ -39,7 +36,7 @@ Types define possible values and operations. Tests still define observable examp
 
 Choose one end-to-end capability. State its inputs, results, failures, and state changes in domain language.
 
-Keep the slice small. Do not model the entire domain upfront.
+Keep the slice small.
 
 ### Shape the Domain
 
@@ -52,7 +49,7 @@ Identify concepts with distinct identity, lifecycle, or meaning. Describe their 
 - Reuse an existing entity when it already owns the concept.
 - Keep persistence and wire formats outside the domain model.
 
-Every new type should clarify the domain or prevent a realistic mistake.
+Introduce types and generic abstractions only when they clarify the domain or prevent a realistic mistake.
 
 ### Shape Operations
 
@@ -75,7 +72,7 @@ function submitOrder(
 }
 ```
 
-Avoid weak contracts such as `any`, broad `string`, boolean success flags, unchecked casts, or exceptions for expected domain outcomes.
+Use explicit domain types and failure variants in public contracts.
 
 Run the narrowest type-check command while shaping the contract. Confirm valid callers work and invalid calls fail to type-check.
 
@@ -84,7 +81,7 @@ Run the narrowest type-check command while shaping the contract. Confirm valid c
 Let the established shapes guide control flow and data transformations.
 
 - Exhaustively handle each domain variant.
-- Keep casts and unchecked assertions out of domain logic.
+- Keep `any`, unchecked casts, and non-null assertions out of domain logic.
 - Keep I/O at explicit boundaries.
 - Preserve information carried by input types.
 - Do not widen types only to make implementation easier.
@@ -96,8 +93,6 @@ Implementation can reveal missing states or incorrect assumptions. Refine the ty
 If the project has tests, add focused behavioral examples against the typed contract.
 
 When `test-driven-development` also applies, preserve its RED-GREEN-REFACTOR cycle. Type design shapes the API exercised by each test.
-
-Do not treat successful type-checking as proof of runtime behavior.
 
 ### Refine the Model
 
@@ -135,21 +130,6 @@ Ask these questions before implementation:
 4. Are expected failures represented in the return type?
 5. Does an unchecked boundary bypass domain construction?
 6. Can the type checker verify every state transition exhaustively?
-7. Does each abstraction prevent a real defect or clarify the domain?
-
-If a type adds ceremony without safety or clarity, remove it.
-
-## Anti-Patterns
-
-- Treating types as annotations for an implementation that already determined the design.
-- Designing all entities before selecting a vertical slice.
-- Encoding every domain concept as `string`, `number`, or `boolean`.
-- Adding optional properties to merge incompatible lifecycle states.
-- Using `any`, unchecked casts, or non-null assertions to silence the checker.
-- Hiding expected domain failures behind generic exceptions.
-- Confusing transport schemas, persistence records, and domain entities.
-- Treating type-check success as a replacement for tests.
-- Creating complex generic machinery without a domain requirement.
 
 ## Verification
 

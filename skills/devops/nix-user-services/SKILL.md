@@ -1,14 +1,13 @@
 ---
 name: nix-user-services
 description: "Define and verify Home Manager user services."
-version: 1.0.0
-author: Hermes Agent
 license: MIT
-platforms: [linux, macos]
 metadata:
-  hermes:
-    tags: [nix, home-manager, systemd, services]
-    category: devops
+  version: "1.0.0"
+  author: "Hermes Agent"
+  platforms: "linux, macos"
+  hermes.tags: "nix, home-manager, systemd, services"
+  hermes.category: "devops"
 ---
 
 # Nix User Services Skill
@@ -23,26 +22,24 @@ Define persistent per-user services through Home Manager, with systemd on Linux 
 
 ## Prerequisites
 
-- The target repository is a Nix flake with a Home Manager configuration.
-- Inspect the module that imports the service and the application package or wrapper before choosing `ExecStart`.
-- Use `read_file`, `search_files`, and `terminal` to establish the existing Nix style and the actual executable path.
+The target repository is a Nix flake with a Home Manager configuration.
 
-## How to Run
+## Workflow
 
-1. Read the target `.nix` module and search the repository for existing `systemd.user.services` conventions.
-2. Inspect the executable that will run in the service. Do not assume a package attribute exports a matching CLI binary.
-3. Add a `systemd.user.services.<name>` declaration with a stable `ExecStart`, explicit working directory where appropriate, restart policy, and `Install.WantedBy = [ "default.target" ]`.
-4. For reusable flakes, expose Home Manager modules at top level (`homeManagerModules.default`), not under `eachDefaultSystem`; if the module is meant to be imported from NixOS/nix-darwin module lists, add `nixosModules.default` / `darwinModules.default` wrappers that insert it through `home-manager.sharedModules`.
-5. For a Home Manager module that should evaluate on both Linux and Darwin, emit platform-native service namespaces:
-   - Linux: `systemd.user.services.<name>`
-   - Darwin: `launchd.agents.<name>` with `config.ProgramArguments`, `config.KeepAlive`, and `config.RunAtLoad`
-   Inside real Home Manager modules, prefer `lib.mkIf pkgs.stdenv.isLinux { ... }` / `lib.mkIf pkgs.stdenv.isDarwin { ... }` inside a surrounding `lib.mkMerge`; `mkIf` stays lazy enough to avoid forcing the `pkgs` module argument during option collection. Avoid `lib.optionalAttrs pkgs.stdenv...` in a module `config` value when `pkgs` is supplied by the module system — it forces `pkgs` too early and can cause `_module.args.pkgs` infinite recursion.
-6. Evaluate the exact generated service configuration with `nix eval --json` before activation. For cross-platform modules, evaluate representative Linux and Darwin systems even from a Linux host by selecting `nixpkgs.legacyPackages.x86_64-linux` and `nixpkgs.legacyPackages.x86_64-darwin` in a targeted `lib.evalModules` expression.
-7. Run `git diff --check`. Do not activate a full NixOS/Home Manager generation unless the user asked and the scope of unrelated pending changes is understood.
+1. Read the service module, its imports, and existing service declarations.
+2. Inspect the package output or supported wrapper to select the executable.
+3. Set an absolute command path, required environment, working directory where appropriate, restart policy, and startup target.
+4. For reusable flakes, expose `homeManagerModules.default` at top level. Use `home-manager.sharedModules` wrappers for NixOS/nix-darwin imports.
+5. For shared modules, select platform-native services:
+   - Linux: `systemd.user.services.<name>` with `Install.WantedBy = [ "default.target" ]`.
+   - Darwin: `launchd.agents.<name>` with `config.ProgramArguments`, `config.KeepAlive`, and `config.RunAtLoad`.
+   - Gate platform definitions with `lib.mkIf` inside `lib.mkMerge`.
+   - Pass launchd arguments as a list, such as `[ exe "--flag" value ]`.
+6. Follow the verification steps below before activation.
+
+For reusable or cross-platform modules, read the [module patterns and evaluation guidance](references/home-manager-cross-platform-modules.md).
 
 ## Quick Reference
-
-See `references/home-manager-cross-platform-modules.md` for the reusable flake output shape, NixOS/nix-darwin wrapper modules, platform gating pitfalls, and ad-hoc verification script pattern.
 
 See `references/ssh-agent-sockets.md` for the durable pattern when systemd user services need Git SSH authentication through 1Password or another SSH agent socket.
 
@@ -73,78 +70,24 @@ Inspect a generated unit declaration without activating it:
 nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.<user>.systemd.user.services.<service>
 ```
 
-## Procedure
+## Service constraints
 
-### 1. Choose the executable deliberately
-
-Check the package output or existing wrapper. Desktop packages and server CLIs often have different executable names. If a user-maintained wrapper is the supported entry point, use its absolute path and set any required service environment explicitly.
-
-### 2. Expose reusable flake modules at the right level
-
-When a flake exports a Home Manager module meant to be imported as `inputs.<name>.homeManagerModules.default`, do not define it inside `flake-utils.lib.eachDefaultSystem`; that shape becomes `homeManagerModules.<system>.default` and consumers get `attribute 'default' missing`. Define the module once in an outer `let`, reference the package as `self.packages.${pkgs.stdenv.hostPlatform.system}.default` from inside the module, then merge top-level module outputs after `eachDefaultSystem`:
-
-```nix
-outputs = { self, nixpkgs, flake-utils, crane }:
-  let
-    homeManagerModule = { config, lib, pkgs, ... }:
-      let
-        package = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      in {
-        # options/config
-      };
-  in
-  flake-utils.lib.eachDefaultSystem (system: {
-    packages.default = ...;
-  }) // {
-    homeManagerModules.default = homeManagerModule;
-    homeManagerModules.<name> = homeManagerModule;
-  };
-```
-
-If users import from a NixOS/nix-darwin module list that already enables Home Manager, provide wrapper modules that add the HM module via `home-manager.sharedModules`:
-
-```nix
-nixosModules.default = { ... }: {
-  home-manager.sharedModules = [ homeManagerModule ];
-};
-
-darwinModules.default = { ... }: {
-  home-manager.sharedModules = [ homeManagerModule ];
-};
-```
-
-### 3. Bind local admin surfaces safely
-
-For dashboards intended for local use, bind to `127.0.0.1` unless the user explicitly needs remote access and the application authentication design has been reviewed. Do not add insecure bypass flags merely to make a service start.
-
-### 3. Keep macOS evaluation valid
-
-A shared Home Manager module may be imported by both Linux and Darwin configurations. If the service should run on both platforms, generate platform-native services: `systemd.user.services` on Linux and `launchd.agents` on Darwin. Use LaunchAgent `config.ProgramArguments` as a list rather than a shell string; no shell escaping is needed there because launchd calls the executable directly.
-
-When gating these platform-specific service definitions in a real Home Manager module, prefer `lib.mkIf pkgs.stdenv.isLinux { ... }` / `lib.mkIf pkgs.stdenv.isDarwin { ... }` in a surrounding `lib.mkMerge`. Do not use `lib.optionalAttrs pkgs.stdenv...` in module `config` when `pkgs` comes from the module system; `optionalAttrs` is strict in its condition and can force `_module.args.pkgs`, causing infinite recursion in NixOS/Home Manager integration. For ad-hoc tests, define both `systemd.user.services` and `launchd.agents` dummy options if needed so `mkIf false` option trees can be type-checked safely.
-
-### 4. Verify declaratively before activation
-
-Use targeted `nix eval` for the exact service attribute. Confirm the generated `ExecStart`, environment, restart policy, and `WantedBy` values. `git diff --check` catches whitespace and patch errors, but is not a substitute for Nix evaluation.
-
-## Pitfalls
-
-- Do not assume `pkgs.<name>` exposes a same-named executable; inspect it first.
-- Do not put `homeManagerModules.default` inside `flake-utils.lib.eachDefaultSystem` unless consumers are expected to import `homeManagerModules.<system>.default`; top-level `homeManagerModules.default` must be merged outside `eachDefaultSystem`.
-- Do not import a Home Manager module directly into a NixOS or nix-darwin top-level module list unless it is explicitly valid there. When Home Manager is enabled by the system config, expose a wrapper `nixosModules.default` / `darwinModules.default` that sets `home-manager.sharedModules = [ homeManagerModule ];`.
-- Do not place a Linux-only `systemd` service in a shared module without a Linux guard or omission.
-- Do not use `lib.optionalAttrs pkgs.stdenv...` in a Home Manager module `config` value when `pkgs` is supplied by the module system; `optionalAttrs` forces its condition during module pushdown and can cause `_module.args.pkgs` infinite recursion. Use `lib.mkIf pkgs.stdenv.isLinux { ... }` / `lib.mkIf pkgs.stdenv.isDarwin { ... }` inside `lib.mkMerge` for platform-specific service definitions in real Home Manager modules.
-- For launchd, prefer `ProgramArguments = [ exe "--flag" value ];` over a single shell command string; launchd does not need shell quoting for list arguments.
-- Do not activate a system generation as incidental verification when the checkout contains unrelated changes.
-- For service env vars that should come from the user's declarative Home Manager environment, use the Home Manager config source (for example `config.home.sessionVariables.SSH_AUTH_SOCK or null`) rather than assuming omission means "inherit the user env". Omitting `Service.Environment` inherits only the systemd user manager environment, which may differ from the user's Home Manager session variables and can point at a stale agent (e.g. GNOME Keyring/GCR instead of 1Password). This is a common root cause of git-sync services timing out on SSH auth every cycle.
-- `--skip-build` is suitable only when the server's static assets are already available; otherwise use the application's documented build/deployment path.
+- Bind local dashboards to `127.0.0.1` unless remote access is explicitly requested and the authentication design has been reviewed.
+- Do not add insecure bypass flags merely to make a service start.
+- Source declarative service variables from Home Manager, for example `config.home.sessionVariables.SSH_AUTH_SOCK or null`.
+  Omitted variables inherit the service manager's environment, which can contain a stale SSH agent socket.
+- Use `--skip-build` only when the application's static assets are already available.
+- Activate a full NixOS/Home Manager generation only when requested and the scope of unrelated pending changes is understood.
 
 ## Verification
 
-- `nix eval --json` returns the generated service object for the Linux configuration.
-- If applicable, a Darwin configuration evaluates and returns generated `launchd.agents` with expected `ProgramArguments`, labels, and restart/load settings, without exposing an invalid `systemd` declaration.
+- Evaluate the generated service with `nix eval --json`. Check service names and labels, executable, arguments, environment, working directory, restart policy, and startup target.
+- For shared modules, evaluate representative Linux and Darwin configurations, including enabled and disabled services.
+  Linux should produce the intended systemd services; Darwin should produce LaunchAgents without invalid systemd declarations.
+  Cross-platform probes can select `nixpkgs.legacyPackages.x86_64-linux` and `nixpkgs.legacyPackages.x86_64-darwin` through `lib.evalModules`.
 - `git diff --check` passes.
-- When there is no canonical repo test/lint/build command that exercises the Home Manager module change, create a focused temporary ad-hoc verification script under `/tmp` using an OS-safe `hermes-verify-` filename prefix. Have it evaluate the module with representative enabled/disabled services and assert exact generated names and command arguments. For cross-platform modules, evaluate both Linux and Darwin package sets in the script where possible, then clean up the temporary script/output. Report this explicitly as ad-hoc verification rather than suite green.
+- If no repository check covers the module, use a safely created temporary `/tmp/hermes-verify-*` script to assert the generated configuration.
+  Remove temporary scripts and output afterward. Report these checks as ad-hoc verification.
 - After an explicitly requested activation, use `systemctl --user status <service>` on Linux, or `launchctl print gui/$UID/<label>` / launchd logs on Darwin, and inspect startup failures.
 
 ### Darwin launchd status and logs

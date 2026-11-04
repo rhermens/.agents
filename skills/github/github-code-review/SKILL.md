@@ -1,14 +1,13 @@
 ---
 name: github-code-review
 description: Acquire GitHub pull request metadata, discussion, diffs, and source code for a code review. Use when a review needs GitHub-hosted PR context or a local checkout. Delegate all analysis and findings to the review skill.
-version: 2.1.0
-author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
 metadata:
-  hermes:
-    tags: [GitHub, Pull-Requests, Git, Code-Acquisition]
-    related_skills: [github-cli, review]
+  version: "2.1.0"
+  author: "Hermes Agent"
+  platforms: "linux, macos, windows"
+  hermes.tags: "GitHub, Pull-Requests, Git, Code-Acquisition"
+  hermes.related_skills: "github-cli, review"
 ---
 
 # GitHub Code Review Acquisition
