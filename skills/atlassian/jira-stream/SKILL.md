@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires jira-stream and a config created by `jira-stream login`. Monitoring stops when the agent session ends.
 metadata:
   author: Roy Hermens
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Jira Stream
@@ -60,7 +60,7 @@ jq '.fields.comment.comments[] | {id, author: .author.displayName, created, body
 ## Watch workflow
 
 1. Confirm the work item key, such as `ABC-123`. If ambiguous, ask for the key.
-2. Read `jira-stream watch --help` to confirm the installed options include `--ticket`.
+2. Read `man jira-stream-watch` to confirm the installed options include `--ticket`.
 3. Confirm the config file exists, as described in [Authenticate](#authenticate).
 4. Start `jira-stream watch --ticket KEY` and consume its output throughout the active session.
 5. Record the first event as the baseline.
@@ -87,7 +87,7 @@ Do not print, read, or copy the config file. Do not run `login` yourself.
 jira-stream watch --ticket KEY --interval 30
 ```
 
-`--interval` is in seconds and defaults to 30. The command accepts no host, user, or output options.
+See `man jira-stream-watch` for options.
 
 Keep the process attached to a session-managed execution tool. Read output with bounded waits so other work can continue. Do not use a detached daemon or restart the watcher after each wait.
 

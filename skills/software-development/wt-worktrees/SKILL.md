@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires Git and the rhermens/wt CLI. Lua configuration features depend on the installed wt release. tmux actions require tmux.
 metadata:
   author: Roy Hermens
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # wt Worktrees
@@ -30,12 +30,7 @@ Follow these steps before changing or opening a worktree.
 
 ### Inspect the environment
 
-1. Confirm the dependency:
-
-   ```sh
-   command -v wt
-   wt --help
-   ```
+1. Read `man wt` for the installed options, path resolution, and configuration load order.
 
 2. Confirm the current checkout:
 
@@ -52,7 +47,7 @@ Follow these steps before changing or opening a worktree.
    <source-checkout>/.wt.lua
    ```
 
-Both scripts execute in that order. Scalar settings can change later. Copy, link, command, and tmux-window actions accumulate.
+Copy, link, command, and tmux-window actions accumulate across both files.
 
 If configuration intent is unclear, stop and ask before running `wt`.
 
@@ -61,27 +56,12 @@ If configuration intent is unclear, stop and ask before running `wt`.
 Use a short relative path whose basename is the intended worktree and branch name:
 
 ```sh
-wt <path>
-```
-
-Examples:
-
-```sh
 wt feature-login
-wt ../worktrees/feature-login
 ```
 
 For a new target, `wt` creates a worktree and branch from the current `HEAD`. If the basename matches an existing branch, it checks out that branch.
 
 If the target already exists, `wt` opens it and reapplies configured actions. Reapplication can overwrite copied files or report existing-link errors.
-
-Pass configuration arguments after `--`:
-
-```sh
-wt feature-login -- "implement login flow"
-```
-
-Lua reads these arguments from zero-based `wt.args`, such as `wt.args[0]`.
 
 ### Configure setup actions
 

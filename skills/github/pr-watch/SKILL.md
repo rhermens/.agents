@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires github-stream, authenticated GitHub CLI (`gh`), and a local checkout whose `origin` is the PR's base repository. github-stream requires GITHUB_TOKEN; it does not reuse gh authentication automatically. Monitoring stops when the agent session ends.
 metadata:
   author: Roy Hermens
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # PR Watch
@@ -15,30 +15,59 @@ Use `github-stream` as the single watcher for one GitHub PR. Report findings in 
 ## Workflow
 
 1. Resolve `OWNER/REPO` and the PR number. If ambiguous, ask for the target.
-2. Read `github-stream --help` to confirm the installed options include `--pr`.
+2. Read `man github-stream` to confirm the installed options include `--pr`.
 3. Check `gh auth status`. If authentication fails, ask the user to authenticate without printing credentials.
 4. Confirm a local checkout whose `origin` is `OWNER/REPO`, as described below.
-5. Start `github-stream --pr PR_NUMBER` and consume its output throughout the active session.
-6. Record the first pass as the baseline, as described below.
-7. Investigate failed checks in the baseline.
-8. Report new or materially edited comments and reviews, PR state changes, new head commits, and newly failed checks promptly.
-9. Continue until the user stops the watch or the PR closes.
+5. Check for an existing watcher socket, as described below.
+6. If no usable socket exists, start `github-stream --pr PR_NUMBER`.
+7. Consume the socket or watcher output throughout the active session.
+8. Record the first pass as the baseline, as described below.
+9. Investigate failed checks in the baseline.
+10. Report new or materially edited comments and reviews, PR state changes, new head commits, and newly failed checks promptly.
+11. Continue until the user stops the watch or the PR closes.
 
 The stream fetches all pages of every source. Do not poll or reconcile with `gh`; use `gh` only for the token, target resolution, and CI investigation.
 
 ## Select the target
 
-`github-stream` accepts `--cwd`, `--pr`, and `--interval`. It does not accept a PR URL or repository option; it reads the repository from the checkout's `origin` remote.
-
-Verify the checkout before starting:
+`man github-stream` describes how `--pr` and `--cwd` select the PR. Verify the checkout before starting:
 
 ```bash
 git -C /path/to/repository remote get-url origin
 ```
 
-Require `origin` to point to `OWNER/REPO`. The current branch does not matter with `--pr`, and fork PRs work when `origin` is the base repository.
+Require `origin` to point to `OWNER/REPO`.
 
 If no checkout matches, ask for one. Do not change remotes or worktree files without authorization.
+
+## Check for an existing watcher
+
+Another session may already run `github-stream` with `--socket` for this worktree. Reuse it instead of starting a second watcher.
+
+1. Resolve the worktree name:
+
+   ```bash
+   basename "$(git -C /path/to/repository rev-parse --show-toplevel)"
+   ```
+
+2. Check for the socket at `/tmp/<worktree-name>-github-stream.sock`:
+
+   ```bash
+   test -S /tmp/<worktree-name>-github-stream.sock
+   ```
+
+3. If the socket exists, connect to it:
+
+   ```bash
+   nc -U /tmp/<worktree-name>-github-stream.sock
+   ```
+
+4. If the connection fails, treat the socket as stale and start a watcher.
+5. If the first `pull_request` event's `number` differs from `PR_NUMBER`, disconnect and start a watcher.
+
+The socket replays all events since watcher startup, then streams live events. Apply the same baseline and deduplication rules as stdout.
+
+Keep the connection attached to a session-managed execution tool. If the connection closes, check the socket again before starting a watcher.
 
 ## Start and consume the watcher
 
@@ -155,6 +184,7 @@ Use the first `pull_request` event as the metadata baseline. Report meaningful c
 The watcher keeps polling after closure or merge; it does not exit on its own.
 
 1. When the PR closes, merges, or the user stops the watch, terminate the watcher.
+   If you connected to an existing socket, close only your connection.
 2. State the reason and time.
 
 ## Verification and limits
