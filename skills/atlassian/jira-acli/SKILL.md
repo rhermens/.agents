@@ -7,7 +7,7 @@ description: Work with Jira Cloud from the terminal using Atlassian CLI (`acli`)
 
 Use this skill for Jira tasks. Prefer Atlassian's official CLI, `acli`, over MCP.
 
-To read or watch one work item by key, use [jira-stream](../jira-stream/SKILL.md) first. Use `acli` for that ticket only to fill data `jira-stream fetch` lacks, such as field names or extra comments.
+To read one work item by key, use `jira-stream fetch --ticket KEY` first; see `man jira-stream-fetch`. To watch one, use [ticket-watch](../ticket-watch/SKILL.md). Use `acli` for that ticket only to fill data `jira-stream fetch` lacks, such as field names or extra comments.
 
 ## Requirements
 
